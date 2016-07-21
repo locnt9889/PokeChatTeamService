@@ -9,6 +9,8 @@ var ResponseServerDto = require("../modelsDto/ResponseServerDto");
 var personService = require("../services/PersonService");
 var CodeStatus = require("../helpers/CodeStatus");
 
+var Person = require("../models/Person");
+
 /* POST create */
 router.post('/create', [function(req, res, next) {
     var responseObj = new ResponseServerDto();
