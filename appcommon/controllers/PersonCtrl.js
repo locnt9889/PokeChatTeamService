@@ -14,8 +14,17 @@ router.post('/create', [function(req, res, next) {
     var responseObj = new ResponseServerDto();
 
     var body = req.body;
+    var name = body.name ? body.name : "";
+    var email = body.email ? body.email : "";
+    var birthday = body.birthday ? body.birthday : "0000-00-00";
 
-    personService.create(body).then(function(result){
+    var person = new Person();
+
+    person.name = name;
+    person.email = email;
+    person.birthday = new Date(birthday);
+
+    personService.create(person).then(function(result){
         responseObj.statusErrorCode = CodeStatus.SUCCESS.code;
         responseObj.results = result;
         res.json(responseObj);
@@ -32,8 +41,9 @@ router.post('/update', [function(req, res, next) {
     var responseObj = new ResponseServerDto();
 
     var body = req.body;
+    var id = req.body.id ? req.body.id : 0;
 
-    personService.update(body).then(function(result){
+    personService.update(id, req.body).then(function(result){
         responseObj.statusErrorCode = CodeStatus.SUCCESS.code;
         responseObj.results = result;
         res.json(responseObj);

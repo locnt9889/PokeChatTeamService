@@ -27,7 +27,7 @@ var GenerateService = function(tableConfig){
  * */
 var detail = function(id, isWithActive, isActive){
     var deferred = Q.defer();
-    this.generateDao.findOne(id, isWithActive, isActive).then(function(result){
+    GenerateService.generateDao.findOne(id, isWithActive, isActive).then(function(result){
         if(result && result.length > 0){
             deferred.resolve(result);
         }else{
@@ -50,7 +50,7 @@ var detail = function(id, isWithActive, isActive){
 var find = function(isWithActive, isActive){
     var deferred = Q.defer();
 
-    this.generateDao.find(isWithActive, isActive).then(function(result){
+    GenerateService.generateDao.find(isWithActive, isActive).then(function(result){
         deferred.resolve(result);
     },function(err){
         logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
@@ -67,7 +67,7 @@ var find = function(isWithActive, isActive){
 var searchBase = function(body){
     var deferred = Q.defer();
 
-    this.generateDao.searchBase(body).then(function(result){
+    GenerateService.generateDao.searchBase(body).then(function(result){
         deferred.resolve(result);
     },function(err){
         logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
@@ -84,9 +84,9 @@ var searchBase = function(body){
 var remove = function(id){
     var deferred = Q.defer();
 
-    this.generateDao.findOne(id).then(function(result){
+    GenerateService.generateDao.findOne(id).then(function(result){
         if(result && result.length > 0){
-            this.generateDao.remove(id).then(function(data){
+            GenerateService.generateDao.remove(id).then(function(data){
                 deferred.resolve(data);
             },function(err){
                 logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
@@ -111,9 +111,9 @@ var remove = function(id){
 var inactive = function(id){
     var deferred = Q.defer();
 
-    this.generateDao.findOne(id).then(function(result){
+    GenerateService.generateDao.findOne(id).then(function(result){
         if(result && result.length > 0){
-            this.generateDao.inactive(id).then(function(data){
+            GenerateService.generateDao.inactive(id).then(function(data){
                 deferred.resolve(data);
             },function(err){
                 logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
@@ -131,11 +131,68 @@ var inactive = function(id){
     return deferred.promise;
 };
 
+/**
+ * @desc Create new person
+ * @param body
+ * */
+var create = function(obj){
+    var deferred = Q.defer();
+
+    GenerateService.generateDao.addNew(obj).then(function(result){
+        obj.id = result.insertId;
+        deferred.resolve(obj);
+    },function(err){
+        logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
+        deferred.reject(CodeStatus.DB_EXECUTE_ERROR);
+    });
+
+    return deferred.promise;
+};
+
+/**
+ * @desc update
+ * @param id
+ * @param obj
+ * */
+var update = function(id, obj){
+    var deferred = Q.defer();
+
+    GenerateService.generateDao.findOne(id).then(function(resultFindOne){
+        if(resultFindOne && resultFindOne.length > 0) {
+            var objDb = resultFindOne[0];
+            var keysObj = obj ? Object.keys(obj) : [];
+            if(keysObj && keysObj.length > 0){
+                for(var key in keysObj){
+                    objDb[keysObj[key]] = obj[keysObj[key]];
+                }
+            }
+            GenerateService.generateDao.update(objDb, id).then(function(result){
+                deferred.resolve(objDb);
+            },function(err){
+                logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
+                deferred.reject(CodeStatus.DB_EXECUTE_ERROR);
+            });
+        }else{
+            logger.error(CodeStatus.OBJECT_NOT_EXIST.message);
+            deferred.reject(CodeStatus.OBJECT_NOT_EXIST);
+        }
+    },function(err){
+        logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
+        deferred.reject(CodeStatus.DB_EXECUTE_ERROR);
+    });
+
+    return deferred.promise;
+};
+
 /*Exports*/
-GenerateService.prototype.detail = detail;
-GenerateService.prototype.searchBase = searchBase;
-GenerateService.prototype.find = find;
-GenerateService.prototype.remove = remove;
-GenerateService.prototype.inactive = inactive;
+GenerateService.prototype = {
+    detail : detail,
+    searchBase : searchBase,
+    find : find,
+    remove : remove,
+    inactive : inactive,
+    create : create,
+    update : update
+};
 
 module.exports = GenerateService;
