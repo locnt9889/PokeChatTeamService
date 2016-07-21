@@ -14,8 +14,8 @@ var logger = require("../helpers/LoggerService");
  * Object MysqlHelper is generic Dao
  * @param tableConfig : object - of db table (NAME, NAME_FIELD_ID, NAME_FIELD_ACTIVE)
  */
-var GenerateService = function(tableConfig){
-    this.generateDao = new mysqlHelper(tableConfig);
+var GenerateService = function(generateDao){
+    this.generateDao = generateDao;
 }
 
 /**
@@ -26,8 +26,9 @@ var GenerateService = function(tableConfig){
  *
  * */
 var detail = function(id, isWithActive, isActive){
+    var seft = this;
     var deferred = Q.defer();
-    GenerateService.generateDao.findOne(id, isWithActive, isActive).then(function(result){
+    seft.generateDao.findOne(id, isWithActive, isActive).then(function(result){
         if(result && result.length > 0){
             deferred.resolve(result);
         }else{
@@ -48,9 +49,10 @@ var detail = function(id, isWithActive, isActive){
  * @param isActive - active value
  * */
 var find = function(isWithActive, isActive){
+    var seft = this;
     var deferred = Q.defer();
 
-    GenerateService.generateDao.find(isWithActive, isActive).then(function(result){
+    seft.generateDao.find(isWithActive, isActive).then(function(result){
         deferred.resolve(result);
     },function(err){
         logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
@@ -65,9 +67,10 @@ var find = function(isWithActive, isActive){
  * @param body - object contain field-value search
  * */
 var searchBase = function(body){
+    var seft = this;
     var deferred = Q.defer();
 
-    GenerateService.generateDao.searchBase(body).then(function(result){
+    seft.generateDao.searchBase(body).then(function(result){
         deferred.resolve(result);
     },function(err){
         logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
@@ -82,11 +85,12 @@ var searchBase = function(body){
  * @param id - id off object
  * */
 var remove = function(id){
-    var deferred = Q.defer();
+    var seft = this;
 
-    GenerateService.generateDao.findOne(id).then(function(result){
+    var deferred = Q.defer();
+    seft.generateDao.findOne(id).then(function(result){
         if(result && result.length > 0){
-            GenerateService.generateDao.remove(id).then(function(data){
+            seft.generateDao.remove(id).then(function(data){
                 deferred.resolve(data);
             },function(err){
                 logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
@@ -109,11 +113,12 @@ var remove = function(id){
  * @param id - id off object
  * */
 var inactive = function(id){
+    var seft = this;
     var deferred = Q.defer();
 
-    GenerateService.generateDao.findOne(id).then(function(result){
+    seft.generateDao.findOne(id).then(function(result){
         if(result && result.length > 0){
-            GenerateService.generateDao.inactive(id).then(function(data){
+            seft.generateDao.inactive(id).then(function(data){
                 deferred.resolve(data);
             },function(err){
                 logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
@@ -136,9 +141,10 @@ var inactive = function(id){
  * @param body
  * */
 var create = function(obj){
+    var seft = this;
     var deferred = Q.defer();
 
-    GenerateService.generateDao.addNew(obj).then(function(result){
+    seft.generateDao.addNew(obj).then(function(result){
         obj.id = result.insertId;
         deferred.resolve(obj);
     },function(err){
@@ -155,9 +161,10 @@ var create = function(obj){
  * @param obj
  * */
 var update = function(id, obj){
+    var seft = this;
     var deferred = Q.defer();
 
-    GenerateService.generateDao.findOne(id).then(function(resultFindOne){
+    seft.generateDao.findOne(id).then(function(resultFindOne){
         if(resultFindOne && resultFindOne.length > 0) {
             var objDb = resultFindOne[0];
             var keysObj = obj ? Object.keys(obj) : [];
@@ -166,7 +173,7 @@ var update = function(id, obj){
                     objDb[keysObj[key]] = obj[keysObj[key]];
                 }
             }
-            GenerateService.generateDao.update(objDb, id).then(function(result){
+            seft.generateDao.update(objDb, id).then(function(result){
                 deferred.resolve(objDb);
             },function(err){
                 logger.error(CodeStatus.DB_EXECUTE_ERROR.message);

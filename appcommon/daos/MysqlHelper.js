@@ -9,9 +9,10 @@ var pool = DbConfig.pool;
 var SqlQueryConstant = require("../helpers/SqlQueryConstant");
 
 /**
- * Object MysqlHelper is generic Dao
+ * Object this is generic Dao
  * @param tableConfig : object - of db table (NAME, NAME_FIELD_ID, NAME_FIELD_ACTIVE)
  */
+
 var MysqlHelper = function(tableConfig){
     this.tableConfig = tableConfig;
 }
@@ -47,10 +48,10 @@ var queryExecute = function(sql, params) {
 var find = function(isWithActive, isActive) {
     var deferred = Q.defer();
     var sql = SqlQueryConstant.GENERIC_SQL.SLQ_FIND;
-    var params = [MysqlHelper.tableConfig.NAME];
+    var params = [this.tableConfig.NAME];
     if(isWithActive){
         sql = SqlQueryConstant.GENERIC_SQL.SLQ_FIND_WITH_FIELD;
-        params = [MysqlHelper.tableConfig.NAME, MysqlHelper.tableConfig.NAME_FIELD_ACTIVE, isActive];
+        params = [this.tableConfig.NAME, this.tableConfig.NAME_FIELD_ACTIVE, isActive];
     }
     pool.getConnection(function(err,connection){
         if (err) {
@@ -76,7 +77,7 @@ var searchBase = function(body) {
     var deferred = Q.defer();
     var sql = SqlQueryConstant.GENERIC_SQL.SLQ_SEARCH_BASE;
 
-    var params = [MysqlHelper.tableConfig.NAME];
+    var params = [this.tableConfig.NAME];
     var queryStr = " 1";
     var keysBody = body ? Object.keys(body) : [];
     if(keysBody && keysBody.length > 0){
@@ -113,11 +114,11 @@ var searchBase = function(body) {
 var findOne = function(id, isWithActive, isActive) {
     var deferred = Q.defer();
     var sql = SqlQueryConstant.GENERIC_SQL.SLQ_FIND_WITH_FIELD;
-    var params = [MysqlHelper.tableConfig.NAME, MysqlHelper.tableConfig.NAME_FIELD_ID, id];
+    var params = [this.tableConfig.NAME, this.tableConfig.NAME_FIELD_ID, id];
 
     if(isWithActive){
         sql = SqlQueryConstant.GENERIC_SQL.SLQ_FIND_WITH_FIELD_AND_ACTIVE;
-        params = [MysqlHelper.tableConfig.NAME, MysqlHelper.tableConfig.NAME_FIELD_ID, id, MysqlHelper.tableConfig.tableConfig.NAME_FIELD_ACTIVE, isActive];
+        params = [this.tableConfig.NAME, this.tableConfig.NAME_FIELD_ID, id, this.tableConfig.tableConfig.NAME_FIELD_ACTIVE, isActive];
     }
     pool.getConnection(function(err,connection){
         if (err) {
@@ -145,7 +146,7 @@ var findOne = function(id, isWithActive, isActive) {
 var addNew = function(obj) {
     var deferred = Q.defer();
     var sql = SqlQueryConstant.GENERIC_SQL.SLQ_ADD_NEW;
-    var params = [MysqlHelper.tableConfig.NAME, obj];
+    var params = [this.tableConfig.NAME, obj];
     pool.getConnection(function(err,connection){
         if (err) {
             connection.release();
@@ -172,7 +173,7 @@ var addNew = function(obj) {
 var update = function(obj, id) {
     var deferred = Q.defer();
     var sql = SqlQueryConstant.GENERIC_SQL.SLQ_UPDATE;
-    var params = [MysqlHelper.tableConfig.NAME, obj, MysqlHelper.tableConfig.NAME_FIELD_ID, id];
+    var params = [this.tableConfig.NAME, obj, this.tableConfig.NAME_FIELD_ID, id];
     pool.getConnection(function(err,connection){
         if (err) {
             connection.release();
@@ -198,7 +199,7 @@ var update = function(obj, id) {
 var remove = function(id) {
     var deferred = Q.defer();
     var sql = SqlQueryConstant.GENERIC_SQL.SLQ_REMOVE;
-    var params = [MysqlHelper.tableConfig.NAME, MysqlHelper.tableConfig.NAME_FIELD_ID, id];
+    var params = [this.tableConfig.NAME, this.tableConfig.NAME_FIELD_ID, id];
     pool.getConnection(function(err,connection){
         if (err) {
             connection.release();
@@ -224,7 +225,7 @@ var remove = function(id) {
 var inactive = function(id) {
     var deferred = Q.defer();
     var sql = SqlQueryConstant.GENERIC_SQL.SLQ_DO_INACTIVE;
-    var params = [MysqlHelper.tableConfig.NAME, MysqlHelper.tableConfig.NAME_FIELD_ACTIVE, id];
+    var params = [this.tableConfig.NAME, this.tableConfig.NAME_FIELD_ACTIVE, id];
     pool.getConnection(function(err,connection){
         if (err) {
             connection.release();

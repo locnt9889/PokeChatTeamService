@@ -8,9 +8,8 @@ var CodeStatus = require("../helpers/CodeStatus");
 var logger = require("../helpers/LoggerService");
 
 var GenerateService = require("./GenerateService");
-var personDao = require("../daos/PersonDao");
-
-var personService = new GenerateService(personDao);
+var accountDao = require("../daos/AccountDao");
+var accountService = new GenerateService(accountDao);
 
 /*Exports*/
-module.exports = personService;
+module.exports = accountService;

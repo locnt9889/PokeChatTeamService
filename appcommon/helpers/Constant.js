@@ -11,7 +11,8 @@ var TABLE_NAME_DB = {
     ACCOUNTS : {
         NAME : "accounts",
         NAME_FIELD_ID : "accountId",
-        NAME_FIELD_ACTIVE : "isActive"
+        NAME_FIELD_ACTIVE : "isActive",
+        NAME_FIELD_EMAIL : "email"
     },
 }
 

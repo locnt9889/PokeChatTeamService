@@ -16,9 +16,10 @@ function Accounts(){
     this.gender = 0;
     this.avatarImage = "";
     this.avatarImage = "";
-    this.gpsLongitude = "";
-    this.gpsLatitude = "";
+    this.gpsLongitude = 0.0;
+    this.gpsLatitude = 0.0;
     this.isActive = true;
+    this.isUpdatedInfo = false;
     this.added = new Date();
     this.updated = new Date();
 };

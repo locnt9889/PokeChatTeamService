@@ -4,9 +4,9 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var fs = require("fs");
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
 
 var app = express();
 
@@ -43,18 +43,16 @@ app.use('/', routes);
 /*
  * START set config mapping url
  */
-//person controller for demo
-var personCtrl = require("./appcommon/controllers/PersonCtrl");
-app.use('/rest/person', personCtrl);
 
-//sendmail controller for demo
-var sendmailTestCtrl = require("./appcommon/controllers/SendmailTestCtrl");
-app.use('/rest/mail', sendmailTestCtrl);
+var routerJson = fs.readFileSync("../router.json", "utf8");
+var routerConfig = JSON.parse(routerJson);
+for(var i = 0; i < routerConfig.length; i++){
+  app.use(routerConfig[i].name, require(routerConfig[i].path));
+}
 
 /*
  * END set config mapping url
  */
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
