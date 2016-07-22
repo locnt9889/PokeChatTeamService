@@ -44,12 +44,14 @@ app.use('/', routes);
  * START set config mapping url
  */
 
-var routerJson = fs.readFileSync("./router.json", "utf8");
-var routerConfig = JSON.parse(routerJson);
-for(var i = 0; i < routerConfig.length; i++){
-  app.use(routerConfig[i].name, require(routerConfig[i].path));
-}
-
+//var routerJson = fs.readFileSync("../router.json", "utf8");
+//var routerConfig = JSON.parse(routerJson);
+//for(var i = 0; i < routerConfig.length; i++){
+//  app.use(routerConfig[i].name, require(routerConfig[i].path));
+//}
+fs.exists("../router.json", function(data){
+  console.log("data : " + data);
+});
 /*
  * END set config mapping url
  */
