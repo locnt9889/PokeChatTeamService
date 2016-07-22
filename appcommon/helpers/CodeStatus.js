@@ -36,12 +36,15 @@ var SEND_MAIL = {
     }
 }
 
+var EMAIL = {
+    EMAIL_INCORRECT : {
+        code : 1101,
+        message : "Email is empty or incorrect format."
+    }
+}
+
 var ACCOUNT_ACTION = {
     REGISTER :{
-        EMAIL_INCORRECT : {
-            code : 2001,
-            message : "Email is empty or incorrect format."
-        },
         PASSWORD_INCORRECT : {
             code : 2002,
             message : "Password is empty or incorrect length (6-20 character)."
@@ -60,5 +63,6 @@ module.exports = {
     ACCESS_TOKEN_INVALID : ACCESS_TOKEN_INVALID,
     OBJECT_NOT_EXIST : OBJECT_NOT_EXIST,
     SEND_MAIL : SEND_MAIL,
+    EMAIL : EMAIL,
     ACCOUNT_ACTION : ACCOUNT_ACTION
 }

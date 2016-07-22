@@ -16,19 +16,18 @@ var Account = require("../models/Account");
 var logger = require("../helpers/LoggerService");
 
 
-/* POST create */
+/* POST Register */
 router.post('/register', [function(req, res, next) {
     var responseObj = new ResponseServerDto();
 
-    var body = req.body;
-    var email = body.email ? body.email : "";
-    var password = body.password ? body.password : "";
+    var email = req.body.email ? req.body.email : "";
+    var password = req.body.password ? req.body.password : "";
 
     if(checkValidateUtil.isEmptyFeild(email) || !checkValidateUtil.checkValidateEmail(email)){
-        logger.error(CodeStatus.ACCOUNT_ACTION.REGISTER.EMAIL_INCORRECT.message);
-        responseObj.statusErrorCode = CodeStatus.ACCOUNT_ACTION.REGISTER.EMAIL_INCORRECT.code;
-        responseObj.errorsObject = CodeStatus.ACCOUNT_ACTION.REGISTER.EMAIL_INCORRECT;
-        responseObj.errorsMessage = CodeStatus.ACCOUNT_ACTION.REGISTER.EMAIL_INCORRECT.message;
+        logger.error(CodeStatus.EMAIL.EMAIL_INCORRECT.message);
+        responseObj.statusErrorCode = CodeStatus.EMAIL.EMAIL_INCORRECT.code;
+        responseObj.errorsObject = CodeStatus.EMAIL.EMAIL_INCORRECT;
+        responseObj.errorsMessage = CodeStatus.EMAIL.EMAIL_INCORRECT.message;
         res.json(responseObj);
         return;
     }
@@ -46,7 +45,7 @@ router.post('/register', [function(req, res, next) {
     objectSearch[Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_EMAIL] = email;
 
     accountService.searchBase(objectSearch).then(function(resultSearch){
-        if(!resultSearch && resultSearch.length > 0){
+        if(resultSearch && resultSearch.length > 0){
             logger.error(CodeStatus.ACCOUNT_ACTION.REGISTER.EMAIL_EXISTED.message);
             responseObj.statusErrorCode = CodeStatus.ACCOUNT_ACTION.REGISTER.EMAIL_EXISTED.code;
             responseObj.errorsObject = CodeStatus.ACCOUNT_ACTION.REGISTER.EMAIL_EXISTED;
@@ -69,6 +68,45 @@ router.post('/register', [function(req, res, next) {
             responseObj.errorsMessage = error.message;
             res.json(responseObj);
         });
+    }, function(error){
+        responseObj.statusErrorCode = error.code;
+        responseObj.errorsObject = error;
+        responseObj.errorsMessage = error.message;
+        res.json(responseObj);
+    });
+
+}]);
+
+/* POST check email exists */
+router.post('/checkEmailExists', [function(req, res, next) {
+    var responseObj = new ResponseServerDto();
+
+    var email = req.body.email ? req.body.email : "";
+
+    if(checkValidateUtil.isEmptyFeild(email) || !checkValidateUtil.checkValidateEmail(email)){
+        logger.error(CodeStatus.EMAIL.EMAIL_INCORRECT.message);
+        responseObj.statusErrorCode = CodeStatus.EMAIL.EMAIL_INCORRECT.code;
+        responseObj.errorsObject = CodeStatus.EMAIL.EMAIL_INCORRECT;
+        responseObj.errorsMessage = CodeStatus.EMAIL.EMAIL_INCORRECT.message;
+        res.json(responseObj);
+        return;
+    }
+
+    var objectSearch = {};
+    objectSearch[Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_EMAIL] = email;
+
+    var dataRes = {
+        isEmailExist : false
+    }
+    accountService.searchBase(objectSearch).then(function(resultSearch){
+        if(resultSearch && resultSearch.length > 0){
+            dataRes.isEmailExist = true;
+        }
+
+        responseObj.statusErrorCode = CodeStatus.SUCCESS.code;
+        responseObj.results = dataRes;
+        res.json(responseObj);
+
     }, function(error){
         responseObj.statusErrorCode = error.code;
         responseObj.errorsObject = error;
