@@ -49,7 +49,7 @@ app.use('/', routes);
 //for(var i = 0; i < routerConfig.length; i++){
 //  app.use(routerConfig[i].name, require(routerConfig[i].path));
 //}
-fs.exists("./router.json", function(data){
+fs.exists("./routerConfig.json", function(data){
   console.log("data : " + data);
 });
 /*
