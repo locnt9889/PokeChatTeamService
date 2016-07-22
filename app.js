@@ -49,8 +49,8 @@ app.use('/', routes);
 //for(var i = 0; i < routerConfig.length; i++){
 //  app.use(routerConfig[i].name, require(routerConfig[i].path));
 //}
-fs.exists("./bin/routerConfig.json", function(data){
-  console.log("data : " + data);
+fs.stat("./routerConfig.json", function(err, data){
+  console.log("data : " + JSON.stringify(data));
 });
 /*
  * END set config mapping url
