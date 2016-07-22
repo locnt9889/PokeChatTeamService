@@ -44,12 +44,12 @@ app.use('/', routes);
  * START set config mapping url
  */
 
-var routerJson = fs.readFileSync("../public/router.json", "utf8");
+var routerJson = fs.readFileSync("/home/develop/deploys/PokeChatTeamService/public/router.json", "utf8");
 var routerConfig = JSON.parse(routerJson);
 for(var i = 0; i < routerConfig.length; i++){
   app.use(routerConfig[i].name, require(routerConfig[i].path));
 }
-fs.exists("../public/router.json", function(data){
+fs.exists("/home/develop/deploys/PokeChatTeamService/public/router.json", function(data){
   console.log("data : " + JSON.stringify(data));
 });
 /*
