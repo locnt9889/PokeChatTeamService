@@ -50,8 +50,6 @@ for(var i = 0; i < routerConfig.length; i++){
   app.use(routerConfig[i].name, require(__dirname + routerConfig[i].path));
 }
 
-console.log("__dirname : " + __dirname);
-
 /*
  * END set config mapping url
  */
