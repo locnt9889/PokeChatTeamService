@@ -1,5 +1,5 @@
 [
-  {"name":"/rest/person", "path":"./appcommon/controllers/PersonCtrl"},
-  {"name":"/rest/mail", "path":"./appcommon/controllers/SendmailTestCtrl"},
-  {"name":"/rest/account", "path":"./appcommon/controllers/AccountCtrl"}
+  {"name":"/rest/person", "path":"/appcommon/controllers/PersonCtrl"},
+  {"name":"/rest/mail", "path":"/appcommon/controllers/SendmailTestCtrl"},
+  {"name":"/rest/account", "path":"/appcommon/controllers/AccountCtrl"}
 ]
