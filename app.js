@@ -44,7 +44,7 @@ app.use('/', routes);
  * START set config mapping url
  */
 
-var routerJson = fs.readFileSync("../router.json", "utf8");
+var routerJson = fs.readFileSync("./router.json", "utf8");
 var routerConfig = JSON.parse(routerJson);
 for(var i = 0; i < routerConfig.length; i++){
   app.use(routerConfig[i].name, require(routerConfig[i].path));
