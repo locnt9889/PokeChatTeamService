@@ -1,6 +1,6 @@
 [
   {"name":"/rest/person", "path":"./appcommon/controllers/PersonCtrl"},
   {"name":"/rest/mail", "path":"./appcommon/controllers/SendmailTestCtrl"},
-  {"name":"/rest/util", "path":"./appcommon/controllers/UtilsCtrl"},
+  {"name":"/rest/utils", "path":"./appcommon/controllers/UtilsCtrl"},
   {"name":"/rest/account", "path":"./appcommon/controllers/AccountCtrl"}
 ]
