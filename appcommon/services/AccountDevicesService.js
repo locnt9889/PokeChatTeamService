@@ -8,9 +8,8 @@ var CodeStatus = require("../helpers/CodeStatus");
 var logger = require("../helpers/LoggerService");
 
 var GenericService = require("./GenericService");
-var personDao = require("../daos/PersonDao");
-
-var personService = new GenericService(personDao);
+var accountDevicesDao = require("../daos/AccountDevicesDao");
+var accountDevicesService = new GenericService(accountDevicesDao);
 
 /*Exports*/
-module.exports = personService;
+module.exports = accountDevicesService;

@@ -19,7 +19,7 @@ router.post('/test-sendmail', [function(req, res, next) {
     var body = req.body;
 
     mailerService.sendMail(body).then(function(result){
-        responseObj.statusErrorCode = CodeStatus.SUCCESS.code;
+        responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
         responseObj.results = result;
         res.json(responseObj);
     }, function(error){

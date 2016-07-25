@@ -2,7 +2,7 @@
  * Created by LocNT on 7/29/15.
  */
 
-function Accounts(){
+function Account(){
     this.accountId = 0;
     this.facebookId = "";
     this.facebookEmail = "";
@@ -13,7 +13,7 @@ function Accounts(){
     this.password = "";
     this.birthday = "0000-00-00";
     this.password = "";
-    this.gender = 0;
+    this.gender = "";
     this.avatarImage = "";
     this.avatarImage = "";
     this.gpsLongitude = 0.0;
@@ -24,4 +24,4 @@ function Accounts(){
     this.updated = new Date();
 };
 
-module.exports = Accounts;
+module.exports = Account;

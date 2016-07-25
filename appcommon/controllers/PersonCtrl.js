@@ -7,6 +7,7 @@ var router = express.Router();
 
 var ResponseServerDto = require("../modelsDto/ResponseServerDto");
 var personService = require("../services/PersonService");
+var serviceUtil = require("../utils/ServiceUtil");
 var CodeStatus = require("../helpers/CodeStatus");
 
 var Person = require("../models/Person");
@@ -27,13 +28,12 @@ router.post('/create', [function(req, res, next) {
     person.birthday = new Date(birthday);
 
     personService.create(person).then(function(result){
-        responseObj.statusErrorCode = CodeStatus.SUCCESS.code;
-        responseObj.results = result;
+        responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
+        person.id = result.insertId;
+        responseObj.results = person;
         res.json(responseObj);
     }, function(error){
-        responseObj.statusErrorCode = error.code;
-        responseObj.errorsObject = error;
-        responseObj.errorsMessage = error.message;
+        responseObj = serviceUtil.generateObjectError(responseObj, error);
         res.json(responseObj);
     });
 }]);
@@ -46,13 +46,11 @@ router.post('/update', [function(req, res, next) {
     var id = req.body.id ? req.body.id : 0;
 
     personService.update(id, req.body).then(function(result){
-        responseObj.statusErrorCode = CodeStatus.SUCCESS.code;
+        responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
         responseObj.results = result;
         res.json(responseObj);
     }, function(error){
-        responseObj.statusErrorCode = error.code;
-        responseObj.errorsObject = error;
-        responseObj.errorsMessage = error.message;
+        responseObj = serviceUtil.generateObjectError(responseObj, error);
         res.json(responseObj);
     });
 }]);
@@ -65,13 +63,11 @@ router.post('/detail', [function(req, res, next) {
     var id = req.body.id ? req.body.id : "";
 
     personService.detail(id).then(function(result){
-        responseObj.statusErrorCode = CodeStatus.SUCCESS.code;
+        responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
         responseObj.results = result;
         res.json(responseObj);
     }, function(error){
-        responseObj.statusErrorCode = error.code;
-        responseObj.errorsObject = error;
-        responseObj.errorsMessage = error.message;
+        responseObj = serviceUtil.generateObjectError(responseObj, error);
         res.json(responseObj);
     });
 }]);
@@ -81,13 +77,11 @@ router.post('/find', [function(req, res, next) {
     var responseObj = new ResponseServerDto();
 
     personService.find(true, true).then(function(result){
-        responseObj.statusErrorCode = CodeStatus.SUCCESS.code;
+        responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
         responseObj.results = result;
         res.json(responseObj);
     }, function(error){
-        responseObj.statusErrorCode = error.code;
-        responseObj.errorsObject = error;
-        responseObj.errorsMessage = error.message;
+        responseObj = serviceUtil.generateObjectError(responseObj, error);
         res.json(responseObj);
     });
 }]);
@@ -99,13 +93,11 @@ router.post('/searchBase', [function(req, res, next) {
     var body = req.body;
 
     personService.searchBase(body).then(function(result){
-        responseObj.statusErrorCode = CodeStatus.SUCCESS.code;
+        responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
         responseObj.results = result;
         res.json(responseObj);
     }, function(error){
-        responseObj.statusErrorCode = error.code;
-        responseObj.errorsObject = error;
-        responseObj.errorsMessage = error.message;
+        responseObj = serviceUtil.generateObjectError(responseObj, error);
         res.json(responseObj);
     });
 }]);

@@ -32,12 +32,14 @@ var detail = function(id, isWithActive, isActive){
         if(result && result.length > 0){
             deferred.resolve(result);
         }else{
-            logger.error(CodeStatus.OBJECT_NOT_EXIST.message);
-            deferred.reject(CodeStatus.OBJECT_NOT_EXIST);
+            logger.error(CodeStatus.COMMON.OBJECT_NOT_EXIST);
+            deferred.reject(CodeStatus.COMMON.OBJECT_NOT_EXIST);
         }
     },function(err){
-        logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
-        deferred.reject(CodeStatus.DB_EXECUTE_ERROR);
+        var errorObj = CodeStatus.COMMON.DB_EXECUTE_ERROR;
+        errorObj["error"] = err;
+        logger.error(JSON.stringify(errorObj));
+        deferred.reject(errorObj);
     });
 
     return deferred.promise;
@@ -55,8 +57,10 @@ var find = function(isWithActive, isActive){
     seft.generateDao.find(isWithActive, isActive).then(function(result){
         deferred.resolve(result);
     },function(err){
-        logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
-        deferred.reject(CodeStatus.DB_EXECUTE_ERROR);
+        var errorObj = CodeStatus.COMMON.DB_EXECUTE_ERROR;
+        errorObj["error"] = err;
+        logger.error(JSON.stringify(errorObj));
+        deferred.reject(errorObj);
     });
 
     return deferred.promise;
@@ -73,8 +77,10 @@ var searchBase = function(body){
     seft.generateDao.searchBase(body).then(function(result){
         deferred.resolve(result);
     },function(err){
-        logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
-        deferred.reject(CodeStatus.DB_EXECUTE_ERROR);
+        var errorObj = CodeStatus.COMMON.DB_EXECUTE_ERROR;
+        errorObj["error"] = err;
+        logger.error(JSON.stringify(errorObj));
+        deferred.reject(errorObj);
     });
 
     return deferred.promise;
@@ -93,16 +99,20 @@ var remove = function(id){
             seft.generateDao.remove(id).then(function(data){
                 deferred.resolve(data);
             },function(err){
-                logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
-                deferred.reject(CodeStatus.DB_EXECUTE_ERROR);
+                var errorObj = CodeStatus.COMMON.DB_EXECUTE_ERROR;
+                errorObj["error"] = err;
+                logger.error(JSON.stringify(errorObj));
+                deferred.reject(errorObj);
             });
         }else{
-            logger.error(CodeStatus.OBJECT_NOT_EXIST.message);
-            deferred.reject(CodeStatus.OBJECT_NOT_EXIST);
+            logger.error(CodeStatus.COMMON.OBJECT_NOT_EXIST);
+            deferred.reject(CodeStatus.COMMON.OBJECT_NOT_EXIST);
         }
     },function(err){
-        logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
-        deferred.reject(CodeStatus.DB_EXECUTE_ERROR);
+        var errorObj = CodeStatus.COMMON.DB_EXECUTE_ERROR;
+        errorObj["error"] = err;
+        logger.error(JSON.stringify(errorObj));
+        deferred.reject(errorObj);
     });
 
     return deferred.promise;
@@ -121,16 +131,20 @@ var inactive = function(id){
             seft.generateDao.inactive(id).then(function(data){
                 deferred.resolve(data);
             },function(err){
-                logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
-                deferred.reject(CodeStatus.DB_EXECUTE_ERROR);
+                var errorObj = CodeStatus.COMMON.DB_EXECUTE_ERROR;
+                errorObj["error"] = err;
+                logger.error(JSON.stringify(errorObj));
+                deferred.reject(errorObj);
             });
         }else{
-            logger.error(CodeStatus.OBJECT_NOT_EXIST.message);
-            deferred.reject(CodeStatus.OBJECT_NOT_EXIST);
+            logger.error(CodeStatus.COMMON.OBJECT_NOT_EXIST.message);
+            deferred.reject(CodeStatus.COMMON.OBJECT_NOT_EXIST);
         }
     },function(err){
-        logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
-        deferred.reject(CodeStatus.DB_EXECUTE_ERROR);
+        var errorObj = CodeStatus.COMMON.DB_EXECUTE_ERROR;
+        errorObj["error"] = err;
+        logger.error(JSON.stringify(errorObj));
+        deferred.reject(errorObj);
     });
 
     return deferred.promise;
@@ -145,11 +159,12 @@ var create = function(obj){
     var deferred = Q.defer();
 
     seft.generateDao.addNew(obj).then(function(result){
-        obj.id = result.insertId;
-        deferred.resolve(obj);
+        deferred.resolve(result);
     },function(err){
-        logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
-        deferred.reject(CodeStatus.DB_EXECUTE_ERROR);
+        var errorObj = CodeStatus.COMMON.DB_EXECUTE_ERROR;
+        errorObj["error"] = err;
+        logger.error(JSON.stringify(errorObj));
+        deferred.reject(errorObj);
     });
 
     return deferred.promise;
@@ -176,16 +191,20 @@ var update = function(id, obj){
             seft.generateDao.update(objDb, id).then(function(result){
                 deferred.resolve(objDb);
             },function(err){
-                logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
-                deferred.reject(CodeStatus.DB_EXECUTE_ERROR);
+                var errorObj = CodeStatus.COMMON.DB_EXECUTE_ERROR;
+                errorObj["error"] = err;
+                logger.error(JSON.stringify(errorObj));
+                deferred.reject(errorObj);
             });
         }else{
-            logger.error(CodeStatus.OBJECT_NOT_EXIST.message);
-            deferred.reject(CodeStatus.OBJECT_NOT_EXIST);
+            logger.error(CodeStatus.COMMON.OBJECT_NOT_EXIST.message);
+            deferred.reject(CodeStatus.COMMON.OBJECT_NOT_EXIST);
         }
     },function(err){
-        logger.error(CodeStatus.DB_EXECUTE_ERROR.message);
-        deferred.reject(CodeStatus.DB_EXECUTE_ERROR);
+        var errorObj = CodeStatus.COMMON.DB_EXECUTE_ERROR;
+        errorObj["error"] = err;
+        logger.error(JSON.stringify(errorObj));
+        deferred.reject(errorObj);
     });
 
     return deferred.promise;

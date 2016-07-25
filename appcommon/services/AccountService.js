@@ -7,9 +7,9 @@ var Constant = require("../helpers/Constant");
 var CodeStatus = require("../helpers/CodeStatus");
 var logger = require("../helpers/LoggerService");
 
-var GenerateService = require("./GenerateService");
+var GenericService = require("./GenericService");
 var accountDao = require("../daos/AccountDao");
-var accountService = new GenerateService(accountDao);
+var accountService = new GenericService(accountDao);
 
 /*Exports*/
 module.exports = accountService;
