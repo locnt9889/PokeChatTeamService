@@ -16,15 +16,9 @@ var md5Encode = function(str){
 }
 
 var generateObjectError = function(responseObj, errorObj, message, code){
-    if(errorObj.code == CodeStatus.COMMON.DB_EXECUTE_ERROR){
-        responseObj.statusErrorCode = code ? code : errorObj.code;
-        responseObj.errorsObject = errorObj.error;
-        responseObj.errorsMessage = message ? message : errorObj.message;
-    }else{
-        responseObj.statusErrorCode = code ? code : errorObj.code;
-        responseObj.errorsObject = errorObj;
-        responseObj.errorsMessage = message ? message : errorObj.message;
-    }
+    responseObj.statusErrorCode = code ? code : errorObj.code;
+    responseObj.errorsObject = errorObj.error ? errorObj.error : errorObj;
+    responseObj.errorsMessage = message ? message : errorObj.message;
 
     return responseObj;
 }
