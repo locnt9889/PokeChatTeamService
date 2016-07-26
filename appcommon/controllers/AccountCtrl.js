@@ -19,13 +19,13 @@ var AccountDevices = require("../models/AccountDevices");
 var accountService = require("../services/AccountService");
 var accessTokenService = require("../services/AccessTokenService");
 
-
 /* POST Register */
 router.post('/register', [function(req, res, next) {
     var responseObj = new ResponseServerDto();
 
     var email = req.body.email ? req.body.email : "";
     var password = req.body.password ? req.body.password : "";
+    var fullname = req.body.fullname ? req.body.fullname : "";
 
     if(checkValidateUtil.isEmptyFeild(email) || !checkValidateUtil.checkValidateEmail(email)){
         logger.error(CodeStatus.ACCOUNT_ACTION.REGISTER.EMAIL_INCORRECT.message);
@@ -37,6 +37,13 @@ router.post('/register', [function(req, res, next) {
     if(checkValidateUtil.isEmptyFeild(password) || !checkValidateUtil.checkLengthPassword(password)){
         logger.error(CodeStatus.ACCOUNT_ACTION.REGISTER.PASSWORD_INCORRECT.message);
         responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.ACCOUNT_ACTION.REGISTER.PASSWORD_INCORRECT);
+        res.json(responseObj);
+        return;
+    }
+
+    if(checkValidateUtil.isEmptyFeild(fullname)){
+        logger.error(CodeStatus.ACCOUNT_ACTION.REGISTER.FULLNAME_EMPTY.message);
+        responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.ACCOUNT_ACTION.REGISTER.FULLNAME_EMPTY);
         res.json(responseObj);
         return;
     }
@@ -145,8 +152,9 @@ router.post('/loginEmail', [function(req, res, next) {
 
     accountService.searchBase(objectSearch).then(function(resultSearch){
         if(resultSearch && resultSearch.length > 0){
+            var account = resultSearch[0];
             var accountDevices = new AccountDevices();
-            accountDevices.accountId = resultSearch[0].accountId;
+            accountDevices.accountId = account.accountId;
             accountDevices.deviceToken = deviceToken;
             accountDevices.deviceType = deviceType;
 
@@ -155,8 +163,9 @@ router.post('/loginEmail', [function(req, res, next) {
 
             accessTokenService.create(accountDevices).then(function(resultCreate){
                 responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
-                accessToken.id = resultCreate.insertId;
-                responseObj.results = accountDevices;
+                accountDevices.id = resultCreate.insertId;
+                account.accountDevices = accountDevices;
+                responseObj.results = account;
                 res.json(responseObj);
             }, function(error){
                 logger.error(JSON.stringify(error));
@@ -211,11 +220,11 @@ router.post('/loginByFB', [function(req, res, next) {
         accountDevice.deviceType = deviceType;
         accountDevice.accessToken = accessToken;
 
-        var addAccessToken = function(){
-            accessTokenService.create(accountDevice).then(function(resultCreate){
+        var addAccessToken = function(account){
+            accessTokenService.create(account.accountDevice).then(function(resultCreate){
                 responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
-                accessToken.id = resultCreate.insertId;
-                responseObj.results = accountDevice;
+                account.accountDevice.id = resultCreate.insertId;
+                responseObj.results = account;
                 res.json(responseObj);
             }, function(error){
                 logger.error(JSON.stringify(error));
@@ -228,7 +237,7 @@ router.post('/loginByFB', [function(req, res, next) {
             if(!resultSearch || resultSearch.length == 0){
                 var account = new Account();
                 account.fullname = jsonObj.name;
-                account.birthday = jsonObj.birthday;
+                account.birthday = new Date(jsonObj.birthday);
                 account.gender = jsonObj.gender.toUpperCase();
                 account.avatarImage = Constant.GET_INFO_FB.USER_FB_AVATAR_LINK.replace("#fbID", jsonObj.id);
                 account.isActive = true;
@@ -237,9 +246,11 @@ router.post('/loginByFB', [function(req, res, next) {
                 account.facebookToken = facebookToken;
 
                 accountService.create(account).then(function(resultCreateAccount){
-
+                    account.accessToken = accessToken;
+                    account.accountId = resultCreateAccount.insertId;
                     accountDevice.accountId = resultCreateAccount.insertId;
-                    addAccessToken();
+                    account.accountDevice = accountDevice;
+                    addAccessToken(account);
 
                 }, function(error){
                     logger.error(JSON.stringify(error));
@@ -250,7 +261,8 @@ router.post('/loginByFB', [function(req, res, next) {
             }else{
                 var account = resultSearch[0];
                 accountDevice.accountId = account.accountId;
-                addAccessToken();
+                account.accountDevice = accountDevice;
+                addAccessToken(account);
             }
         }, function(err){
             logger.error(JSON.stringify(err));
@@ -262,8 +274,17 @@ router.post('/loginByFB', [function(req, res, next) {
         responseObj = serviceUtil.generateObjectError(responseObj, err);
         res.json(responseObj);
     })
+}]);
 
+/* POST get user-detail */
+router.post('/getMyAccount', [accessTokenService.checkAccessToken, function(req, res, next) {
+    var responseObj = new ResponseServerDto();
 
+    var accessTokenObj = req.accessTokenObj;
+
+    responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
+    responseObj.results = accessTokenObj;
+    res.json(responseObj);
 }]);
 
 module.exports = router;

@@ -39,8 +39,12 @@ var SEND_MAIL = {
 var ACCOUNT_ACTION = {
     REGISTER :{
         EMAIL_INCORRECT : {
-            code : 1101,
+            code : 2001,
             message : "Email is empty or incorrect format."
+        },
+        FULLNAME_EMPTY : {
+            code : 2004,
+            message : "Fullname is require field."
         },
         PASSWORD_INCORRECT : {
             code : 2002,
