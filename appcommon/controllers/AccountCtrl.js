@@ -200,7 +200,7 @@ router.post('/loginByFB', [function(req, res, next) {
         return;
     }
 
-    facebookToken = "EAAXMdUm5zJcBAIcZA2hrRCq3EBe7faQVr4An6c188dpgQ1hD6s6B65FZBQwZCy65yVi8JECJh8gx7makllZBLPd67nhuZCsQagj4YrJiuZBKZCUVQCNfbX15XEljJjE4VJUyv1GCw4xaZAXQIKZBLT77Sp4ofCf5jTCHYWDPOKHx7twZDZD";
+    //facebookToken = "EAAXMdUm5zJcBAIcZA2hrRCq3EBe7faQVr4An6c188dpgQ1hD6s6B65FZBQwZCy65yVi8JECJh8gx7makllZBLPd67nhuZCsQagj4YrJiuZBKZCUVQCNfbX15XEljJjE4VJUyv1GCw4xaZAXQIKZBLT77Sp4ofCf5jTCHYWDPOKHx7twZDZD";
 
     var optionsget = Constant.GET_INFO_FB.OPTIONS_GET_INFO_FB;
     optionsget.path = optionsget.path.replace("#TokenFB", facebookToken);
