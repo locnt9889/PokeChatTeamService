@@ -11,6 +11,7 @@ var Constant = require("../helpers/Constant");
 
 var logger = require("../helpers/LoggerService");
 var serviceUtil = require("../utils/ServiceUtil");
+var accessTokenService = require("../services/AccessTokenService");
 
 /* POST GET status code */
 router.post('/getStatusCode', [function(req, res, next) {
@@ -36,6 +37,17 @@ router.post('/encodeMD5', [function(req, res, next) {
 
     responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
     responseObj.results = serviceUtil.md5Encode(str);
+    res.json(responseObj);
+}]);
+
+/* POST GET status code */
+router.post('/checkAccessToken', [accessTokenService.checkAccessToken, function(req, res, next) {
+    var responseObj = new ResponseServerDto();
+
+    var accessTokenObj = req.accessTokenObj;
+
+    responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
+    responseObj.results = accessTokenObj;
     res.json(responseObj);
 }]);
 

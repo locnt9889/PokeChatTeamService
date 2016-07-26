@@ -17,7 +17,7 @@ var Account = require("../models/Account");
 var AccountDevices = require("../models/AccountDevices");
 
 var accountService = require("../services/AccountService");
-var accountDevicesService = require("../services/AccountDevicesService");
+var accessTokenService = require("../services/AccessTokenService");
 
 
 /* POST Register */
@@ -153,7 +153,7 @@ router.post('/loginEmail', [function(req, res, next) {
             var accessToken = serviceUtil.generateAccessToken();
             accountDevices.accessToken = accessToken;
 
-            accountDevicesService.create(accountDevices).then(function(resultCreate){
+            accessTokenService.create(accountDevices).then(function(resultCreate){
                 responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
                 accessToken.id = resultCreate.insertId;
                 responseObj.results = accountDevices;
@@ -212,7 +212,7 @@ router.post('/loginByFB', [function(req, res, next) {
         accountDevice.accessToken = accessToken;
 
         var addAccessToken = function(){
-            accountDevicesService.create(accountDevice).then(function(resultCreate){
+            accessTokenService.create(accountDevice).then(function(resultCreate){
                 responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
                 accessToken.id = resultCreate.insertId;
                 responseObj.results = accountDevice;
@@ -253,7 +253,7 @@ router.post('/loginByFB', [function(req, res, next) {
                 addAccessToken();
             }
         }, function(err){
-
+            logger.error(JSON.stringify(err));
             responseObj = serviceUtil.generateObjectError(responseObj,err);
             res.send(responseObj);
         });

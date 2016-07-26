@@ -19,7 +19,8 @@ var TABLE_NAME_DB = {
     ACCOUNT_DEVICES : {
         NAME : "accounts_device",
         NAME_FIELD_ID : "id",
-        NAME_FIELD_ACTIVE : "isActive"
+        NAME_FIELD_ACTIVE : "isActive",
+        NAME_FIELD_ACCESS_TOKEN : "accessToken"
     },
 }
 
