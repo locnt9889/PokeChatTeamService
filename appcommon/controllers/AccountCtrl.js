@@ -226,13 +226,13 @@ router.post('/loginByFB', [function(req, res, next) {
         accountService.searchBase(objectSearch).then(function(resultSearch){
             if(!resultSearch || resultSearch.length == 0){
                 var account = new Account();
-                account.fullname = jsonObj.name;
-                account.birthday = new Date(jsonObj.birthday);
-                account.gender = jsonObj.gender.toUpperCase();
+                account.fullname = jsonObj.name? jsonObj.name : "";
+                account.birthday = jsonObj.birthday ? new Date(jsonObj.birthday) : account.birthday;
+                account.gender = jsonObj.gender ? jsonObj.gender.toUpperCase() : "";
                 account.avatarImage = Constant.GET_INFO_FB.USER_FB_AVATAR_LINK.replace("#fbID", jsonObj.id);
                 account.isActive = true;
                 account.facebookId = jsonObj.id;
-                account.facebookEmail = jsonObj.email;
+                account.facebookEmail = jsonObj.email ? jsonObj.email : "";
                 account.facebookToken = facebookToken;
 
                 accountService.create(account).then(function(resultCreateAccount){
