@@ -293,7 +293,7 @@ router.post('/syncPhoneContact', [accessTokenService.checkAccessToken, function(
     }
 
     accountsPhoneContactService.removeAllContactPhone(accessTokenObj.accountId).then(function(dataRemove){
-        var dataArray = dataSync.split(",");
+        var dataArray = dataSync.split(";");
         for(var i = 0; i < dataArray.length; i++){
             var accountPhoneContact = new AccountPhoneContact();
             accountPhoneContact.value = dataArray[i];
