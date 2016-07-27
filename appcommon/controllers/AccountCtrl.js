@@ -14,10 +14,13 @@ var Constant = require("../helpers/Constant");
 var logger = require("../helpers/LoggerService");
 
 var Account = require("../models/Account");
+var AccountPhoneContact = require("../models/AccountPhoneContact");
+
 var AccountDevices = require("../models/AccountDevices");
 
 var accountService = require("../services/AccountService");
 var accessTokenService = require("../services/AccessTokenService");
+var accountsPhoneContactService = require("../services/AccountsPhoneContactService");
 
 /* POST Register */
 router.post('/register', [function(req, res, next) {
@@ -220,19 +223,6 @@ router.post('/loginByFB', [function(req, res, next) {
         accountDevice.deviceType = deviceType;
         accountDevice.accessToken = accessToken;
 
-        var addAccessToken = function(account){
-            accessTokenService.create(account.accountDevice).then(function(resultCreate){
-                responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
-                account.accountDevice.id = resultCreate.insertId;
-                responseObj.results = account;
-                res.json(responseObj);
-            }, function(error){
-                logger.error(JSON.stringify(error));
-                responseObj = serviceUtil.generateObjectError(responseObj, error);
-                res.json(responseObj);
-            });
-        }
-
         accountService.searchBase(objectSearch).then(function(resultSearch){
             if(!resultSearch || resultSearch.length == 0){
                 var account = new Account();
@@ -250,7 +240,7 @@ router.post('/loginByFB', [function(req, res, next) {
                     account.accountId = resultCreateAccount.insertId;
                     accountDevice.accountId = resultCreateAccount.insertId;
                     account.accountDevice = accountDevice;
-                    addAccessToken(account);
+                    accountService.addAccessToken(res, account, responseObj);
 
                 }, function(error){
                     logger.error(JSON.stringify(error));
@@ -262,7 +252,7 @@ router.post('/loginByFB', [function(req, res, next) {
                 var account = resultSearch[0];
                 accountDevice.accountId = account.accountId;
                 account.accountDevice = accountDevice;
-                addAccessToken(account);
+                accountService.addAccessToken(res, account, responseObj);
             }
         }, function(err){
             logger.error(JSON.stringify(err));
@@ -285,6 +275,44 @@ router.post('/getMyAccount', [accessTokenService.checkAccessToken, function(req,
     responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
     responseObj.results = accessTokenObj;
     res.json(responseObj);
+}]);
+
+/* POST sync data contact */
+router.post('/syncPhoneContact', [accessTokenService.checkAccessToken, function(req, res, next) {
+    var responseObj = new ResponseServerDto();
+
+    var accessTokenObj = req.accessTokenObj;
+
+    var dataSync = req.body.dataSync ? req.body.dataSync : "";
+
+    if(checkValidateUtil.isEmptyFeild(dataSync)){
+        responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
+        responseObj.errorsMessage = CodeStatus.ACCOUNT_ACTION.PHONE_CONTACT.DATA_SYNC_EMPTY.message;
+        res.json(responseObj);
+        return;
+    }
+
+    accountsPhoneContactService.removeAllContactPhone(accessTokenObj.accountId).then(function(dataRemove){
+        var dataArray = dataSync.split(",");
+        for(var i = 0; i < dataArray.length; i++){
+            var accountPhoneContact = new AccountPhoneContact();
+            accountPhoneContact.value = dataArray[i];
+            accountPhoneContact.accountId = accessTokenObj.accountId;
+            accountsPhoneContactService.create(accountPhoneContact).then(function(result){
+                logger.info("add phone contact success : " + result.insertId);
+            }, function(err){
+                logger.error(JSON.stringify(err));
+            });
+        }
+
+        responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
+        responseObj.results = dataArray;
+        res.json(responseObj);
+    }, function(err){
+        logger.error(JSON.stringify(err));
+        responseObj = serviceUtil.generateObjectError(responseObj, err);
+        res.json(responseObj);
+    });
 }]);
 
 module.exports = router;

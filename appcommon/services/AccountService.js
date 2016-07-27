@@ -13,6 +13,10 @@ var GenericService = require("./GenericService");
 var accountDao = require("../daos/AccountDao");
 var accountService = new GenericService(accountDao);
 
+var accessTokenService = require("./AccessTokenService");
+var serviceUtil = require("../utils/ServiceUtil");
+
+
 accountService.getInfoFacebookToken = function(facebookToken){
     var deferred = Q.defer();
 
@@ -64,6 +68,19 @@ accountService.getInfoFacebookToken = function(facebookToken){
     });
 
     return deferred.promise;
+}
+
+accountService.addAccessToken = function(res, account, responseObj){
+    accessTokenService.create(account.accountDevice).then(function(resultCreate){
+        responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
+        account.accountDevice.id = resultCreate.insertId;
+        responseObj.results = account;
+        res.json(responseObj);
+    }, function(error){
+        logger.error(JSON.stringify(error));
+        responseObj = serviceUtil.generateObjectError(responseObj, error);
+        res.json(responseObj);
+    });
 }
 
 /*Exports*/

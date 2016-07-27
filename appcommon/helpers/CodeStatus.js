@@ -73,20 +73,26 @@ var ACCOUNT_ACTION = {
             message : "Require field is empty."
         },
         LOGIN_EMAIL_FB : {
-            code: 2201,
+            code: 2105,
             message: "Login is failure, please login by FB with this email!"
         },
         LOGIN_FB_ERROR_GET_PROFILE_ACCESS : {
-            code: 2203,
+            code: 2106,
             message: "Login facebook, get info of access token is failure!"
         },
         LOGIN_FB_ERROR_EMAIL_NON_FB : {
-            code: 2204,
+            code: 2107,
             message: "Login facebook, user is not a user fb!"
         },
         LOGIN_FB_ERROR_ACCESS_TOKEN_INVALID : {
-            code: 2205,
+            code: 2108,
             message: "Login facebook, access token is invalid!"
+        }
+    },
+    PHONE_CONTACT :{
+        DATA_SYNC_EMPTY : {
+            code : 2200,
+            message : "Data sync contact is empty."
         }
     }
 }

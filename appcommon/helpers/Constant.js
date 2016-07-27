@@ -22,6 +22,12 @@ var TABLE_NAME_DB = {
         NAME_FIELD_ACTIVE : "isActive",
         NAME_FIELD_ACCESS_TOKEN : "accessToken"
     },
+    ACCOUNTS_PHONE_CONTACT : {
+        NAME : "accounts_phone_contact",
+        NAME_FIELD_ID : "id",
+        NAME_FIELD_ACTIVE : "isActive",
+        NAME_FIELD_ACCOUNT_ID : "accountId"
+    }
 }
 
 var DEVICE_TYPE = {
