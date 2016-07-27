@@ -135,7 +135,7 @@ router.post('/loginEmail', [function(req, res, next) {
         return;
     }
 
-    if(checkValidateUtil.isEmptyFeild(password) || checkValidateUtil.isEmptyFeild(deviceToken) || checkValidateUtil.isEmptyFeild(deviceType)){
+    if(checkValidateUtil.isEmptyFeild(password) || checkValidateUtil.isEmptyFeild(deviceType)){
         logger.error(CodeStatus.ACCOUNT_ACTION.LOGIN.EMPTY_FIELD_REQUIRE.message);
         responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.ACCOUNT_ACTION.LOGIN.EMPTY_FIELD_REQUIRE);
         res.json(responseObj);
@@ -196,7 +196,7 @@ router.post('/loginByFB', [function(req, res, next) {
     var deviceToken = req.body.deviceToken ? req.body.deviceToken : "";
     var deviceType = req.body.deviceType ? req.body.deviceType : "";
 
-    if(checkValidateUtil.isEmptyFeild(facebookToken) && checkValidateUtil.isEmptyFeild(deviceToken) && checkValidateUtil.isEmptyFeild(deviceType)){
+    if(checkValidateUtil.isEmptyFeild(facebookToken) && checkValidateUtil.isEmptyFeild(deviceType)){
         logger.error(CodeStatus.ACCOUNT_ACTION.LOGIN.EMPTY_FIELD_REQUIRE.message);
         responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.ACCOUNT_ACTION.LOGIN.EMPTY_FIELD_REQUIRE);
         res.json(responseObj);
