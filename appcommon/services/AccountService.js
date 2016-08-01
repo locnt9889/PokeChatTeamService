@@ -70,9 +70,9 @@ accountService.getInfoFacebookToken = function(facebookToken){
 
 accountService.addAccessToken = function(res, account, responseObj){
     var accessTokenService = require("../services/AccessTokenService");
-    accessTokenService.create(account.accountDevice).then(function(resultCreate){
+    accessTokenService.create(account.accountDevices).then(function(resultCreate){
         responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
-        account.accountDevice.id = resultCreate.insertId;
+        account.accountDevices.id = resultCreate.insertId;
         responseObj.results = account;
         res.json(responseObj);
     }, function(error){
