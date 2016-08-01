@@ -218,10 +218,10 @@ router.post('/loginByFB', [function(req, res, next) {
         objectSearch[Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_FACEBOOKID] = facebookId;
 
         var accessToken = serviceUtil.generateAccessToken();
-        var accountDevice = new AccountDevices();
-        accountDevice.deviceToken = deviceToken;
-        accountDevice.deviceType = deviceType;
-        accountDevice.accessToken = accessToken;
+        var accountDevices = new AccountDevices();
+        accountDevices.deviceToken = deviceToken;
+        accountDevices.deviceType = deviceType;
+        accountDevices.accessToken = accessToken;
 
         accountService.searchBase(objectSearch).then(function(resultSearch){
             if(!resultSearch || resultSearch.length == 0){
@@ -239,8 +239,8 @@ router.post('/loginByFB', [function(req, res, next) {
                 accountService.create(account).then(function(resultCreateAccount){
                     account.accessToken = accessToken;
                     account.accountId = resultCreateAccount.insertId;
-                    accountDevice.accountId = resultCreateAccount.insertId;
-                    account.accountDevice = accountDevice;
+                    accountDevices.accountId = resultCreateAccount.insertId;
+                    account.accountDevices = accountDevices;
                     accountService.addAccessToken(res, account, responseObj);
 
                 }, function(error){
@@ -251,8 +251,8 @@ router.post('/loginByFB', [function(req, res, next) {
 
             }else{
                 var account = resultSearch[0];
-                accountDevice.accountId = account.accountId;
-                account.accountDevice = accountDevice;
+                accountDevices.accountId = account.accountId;
+                account.accountDevices = accountDevices;
                 accountService.addAccessToken(res, account, responseObj);
             }
         }, function(err){
