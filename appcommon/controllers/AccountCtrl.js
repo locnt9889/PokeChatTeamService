@@ -234,6 +234,7 @@ router.post('/loginByFB', [function(req, res, next) {
                 account.facebookId = jsonObj.id;
                 account.facebookEmail = jsonObj.email ? jsonObj.email : "";
                 account.facebookToken = facebookToken;
+                account.isUpdatedInfo = true;
 
                 accountService.create(account).then(function(resultCreateAccount){
                     account.accessToken = accessToken;
@@ -307,6 +308,43 @@ router.post('/syncPhoneContact', [accessTokenService.checkAccessToken, function(
 
         responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
         responseObj.results = dataArray;
+        res.json(responseObj);
+    }, function(err){
+        logger.error(JSON.stringify(err));
+        responseObj = serviceUtil.generateObjectError(responseObj, err);
+        res.json(responseObj);
+    });
+}]);
+
+/* POST update profile */
+router.post('/updateProfile', [accessTokenService.checkAccessToken, function(req, res, next) {
+    var responseObj = new ResponseServerDto();
+
+    var accessTokenObj = req.accessTokenObj;
+    var myAccount = accessTokenObj.account;
+    delete myAccount.password;
+
+    var fullname = req.body.fullname ? req.body.fullname : "";
+    var birthday = req.body.birthday ? new Date(req.body.birthday) : "";
+    var phone = req.body.phone ? req.body.phone : "";
+    var gender = req.body.gender ? req.body.gender : "";
+    var gpsLatitude = req.body.gpsLatitude ? req.body.gpsLatitude : "";
+    var gpsLongitude = req.body.gpsLongitude ? req.body.gpsLongitude : "";
+    var isCanSearchMeByGPS = req.body.isCanSearchMeByGPS ? true : false;
+    var gpsPersonCanSearchMe = req.body.gpsPersonCanSearchMe ? req.body.gpsPersonCanSearchMe.toUpperCase() : "ALL";
+
+    myAccount.fullname = fullname;
+    myAccount.birthday = birthday;
+    myAccount.phone = phone;
+    myAccount.gender = gender;
+    myAccount.gpsLatitude = gpsLatitude;
+    myAccount.gpsLongitude = gpsLongitude;
+    myAccount.isCanSearchMeByGPS = isCanSearchMeByGPS;
+    myAccount.gpsPersonCanSearchMe = gpsPersonCanSearchMe;
+
+    accountService.update(myAccount.accountId, myAccount).then(function(dataRemove){
+        responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
+        responseObj.results = myAccount;
         res.json(responseObj);
     }, function(err){
         logger.error(JSON.stringify(err));

@@ -20,6 +20,8 @@ function Account(){
     this.gpsLatitude = 0.0;
     this.isActive = true;
     this.isUpdatedInfo = false;
+    this.isCanSearchMeByGPS = true;
+    this.gpsPersonCanSearchMe = "ALL";
     this.added = new Date();
     this.updated = new Date();
 };
