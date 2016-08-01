@@ -37,6 +37,7 @@ var DEVICE_TYPE = {
 }
 var GET_INFO_FB = {
     USER_FB_AVATAR_LINK : "https://graph.facebook.com/#fbID/picture?type=large",
+    URL_CHECK_FB_TOKEN : "https://graph.facebook.com/me?access_token=",
     OPTIONS_GET_INFO_FB : {
         host : 'graph.facebook.com', // here only the domain name
         port : 443,

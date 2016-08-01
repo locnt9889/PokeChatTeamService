@@ -2,8 +2,7 @@
  * Created by LocNT on 7/29/15.
  */
 var Q = require('q');
-var https = require('https');
-var StringDecoder = require('string_decoder').StringDecoder;
+var request = require('request');
 
 var Constant = require("../helpers/Constant");
 var CodeStatus = require("../helpers/CodeStatus");
@@ -17,23 +16,12 @@ var serviceUtil = require("../utils/ServiceUtil");
 
 accountService.getInfoFacebookToken = function(facebookToken){
     var deferred = Q.defer();
-
-    var optionsget = Constant.GET_INFO_FB.OPTIONS_GET_INFO_FB;
-    optionsget.path = optionsget.path.replace("#TokenFB", facebookToken);
-
-    // do the GET request
-    var reqGet = https.request(optionsget, function(response) {
-        var decoder = new StringDecoder('utf8');
-        var text = "";
-
-        response.on('data', function(data) {
-            text += decoder.write(data);
-        });
-
-        response.on('end', function() {
+    var url = Constant.GET_INFO_FB.URL_CHECK_FB_TOKEN + facebookToken;
+    request(url, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
             var jsonObj = {};
             try {
-                jsonObj = JSON.parse(text);
+                jsonObj = JSON.parse(body);
             }catch(e){
                 logger.error(JSON.stringify(e));
                 var errorObj = CodeStatus.ACCOUNT_ACTION.LOGIN.LOGIN_FB_ERROR_GET_PROFILE_ACCESS;
@@ -52,17 +40,13 @@ accountService.getInfoFacebookToken = function(facebookToken){
             }
 
             deferred.resolve(jsonObj);
-
-        });
-    });
-
-    reqGet.end();
-    reqGet.on('error', function(e) {
-        logger.error(JSON.stringify(e));
-        var errorObj = CodeStatus.ACCOUNT_ACTION.LOGIN.LOGIN_FB_ERROR_GET_PROFILE_ACCESS;
-        errorObj.error = e;
-        deferred.reject(errorObj);
-        return;
+        }else{
+            logger.error(JSON.stringify(error));
+            var errorObj = CodeStatus.ACCOUNT_ACTION.LOGIN.LOGIN_FB_ERROR_GET_PROFILE_ACCESS;
+            errorObj.error = error;
+            deferred.reject(errorObj);
+            return;
+        }
     });
 
     return deferred.promise;
