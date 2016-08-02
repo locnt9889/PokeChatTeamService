@@ -3,6 +3,7 @@
  */
 
 var express = require('express');
+var path = require('path');
 var router = express.Router();
 
 var ResponseServerDto = require("../modelsDto/ResponseServerDto");
@@ -49,6 +50,12 @@ router.post('/checkAccessToken', [accessTokenService.checkAccessToken, function(
     responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
     responseObj.results = accessTokenObj;
     res.json(responseObj);
+}]);
+
+/* POST GET status code */
+router.get('/documentUpload', [function(req, res, next) {
+    var fullFile = Constant.FOLDER_ROOT + "/public/TestUploadFile.html";
+    res.sendFile(path.resolve(fullFile));
 }]);
 
 module.exports = router;

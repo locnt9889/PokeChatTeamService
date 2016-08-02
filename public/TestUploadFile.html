@@ -5,20 +5,27 @@
     <title></title>
 </head>
     <br/>
-    <br/>
     <h3>Image File Avatar:</h3>
-    <form action="http://localhost:9889/rest/account/updateAvatar?accessToken=cd9f53c0-5249-11e6-9bca-95a1e69cb789" method="post" enctype="multipart/form-data">
+    <h4> URL : http://chovietmoi:9889/rest/account/updateAvatar</h4>
+    <h4> name param of image  : imageFile </h4>
+    <h4> enctype : multipart/form-data </h4>
+    <h4> urlview : http://chovietmoi:9889/rest/account/:accountId/view-avatar/:file </h4>
+    <h4> ex : http://chovietmoi:9889/rest/account/1/view-avatar/ACCOUNT_AVATAR_1_1470155107961.jpg </h4>
+    <form action="http://chovietmoi:9889/rest/account/updateAvatar?accessToken=cd9f53c0-5249-11e6-9bca-95a1e69cb789" method="post" enctype="multipart/form-data">
         <input name="imageFile" type="file"></input>
-        <br/>
         <br/>
         <input type="submit"></input>
     </form>
     <br/>
     <br/>
-    <br/>
-    <br/>
     <h3>Image File Cover:</h3>
-    <form action="http://localhost:9889/rest/account/updateCover?accessToken=cd9f53c0-5249-11e6-9bca-95a1e69cb789" method="post" enctype="multipart/form-data">
+    <h4> URL : http://chovietmoi:9889/rest/account/updateCover</h4>
+    <h4> name param of image  : imageFile </h4>
+    <h4> enctype : multipart/form-data </h4>
+    <h4> urlview : http://chovietmoi:9889/rest/account/:accountId/view-avatar/:file </h4>
+    <h4> ex : http://chovietmoi:9889/rest/account/1/view-cover/ACCOUNT_COVER_1_1470155107961.jpg </h4>
+    <br/>
+    <form action="http://chovietmoi:9889/rest/account/updateCover?accessToken=cd9f53c0-5249-11e6-9bca-95a1e69cb789" method="post" enctype="multipart/form-data">
         <input name="imageFile" type="file"></input>
         <br/>
         <br/>

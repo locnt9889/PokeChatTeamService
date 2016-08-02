@@ -30,13 +30,15 @@ var TABLE_NAME_DB = {
     }
 }
 
+var FOLDER_ROOT = "/home/develop/deploys/PokeChatTeamService";
+//FOLDER_ROOT = "/Users/ChungTV/WebstormProjects/Nodejs-MySql/PokeChatTeamService";
+
 var UPLOAD_FILE_CONFIG = {
     MAX_SIZE_IMAGE : {
         ACCOUNT_AVATAR : 3145728,//3Mb
         ACCOUNT_COVER : 5242880,//5Mb
     },
-    //UPLOAD_FOLDER : "/home/develop/deploys/ChoVietMoiService/uploads",
-    UPLOAD_FOLDER : "/Users/ChungTV/WebstormProjects/Nodejs-MySql/PokeChatTeamService/uploads",
+    UPLOAD_FOLDER : FOLDER_ROOT + "/uploads",
     PRE_FOLDER_IMAGE : {
         ACCOUNT_AVATAR : "/Images/Account/#ID/",
         ACCOUNT_COVER : "/Images/Account/#ID/",
@@ -71,5 +73,6 @@ module.exports = {
     TABLE_NAME_DB : TABLE_NAME_DB,
     DEVICE_TYPE : DEVICE_TYPE,
     GET_INFO_FB : GET_INFO_FB,
-    UPLOAD_FILE_CONFIG : UPLOAD_FILE_CONFIG
+    UPLOAD_FILE_CONFIG : UPLOAD_FILE_CONFIG,
+    FOLDER_ROOT : FOLDER_ROOT
 }
