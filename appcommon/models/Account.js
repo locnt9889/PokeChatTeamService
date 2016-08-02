@@ -15,7 +15,8 @@ function Account(){
     this.password = "";
     this.gender = "";
     this.avatarImage = "";
-    this.avatarImage = "";
+    this.coverImage = "";
+    this.status = "";
     this.gpsLongitude = 0.0;
     this.gpsLatitude = 0.0;
     this.isActive = true;

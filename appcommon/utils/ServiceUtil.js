@@ -23,9 +23,19 @@ var generateObjectError = function(responseObj, errorObj, message, code){
     return responseObj;
 }
 
+var getExtFileByName = function(fileName) {
+    var lastDotIndex = fileName.lastIndexOf(".");
+    if (lastDotIndex == -1) {
+        return "";
+    } else{
+        return fileName.substr(lastDotIndex);
+    }
+}
+
 /*Export*/
 module.exports = {
     generateAccessToken : generateAccessToken,
     md5Encode : md5Encode,
-    generateObjectError : generateObjectError
+    generateObjectError : generateObjectError,
+    getExtFileByName : getExtFileByName
 }

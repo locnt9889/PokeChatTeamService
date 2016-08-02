@@ -21,6 +21,7 @@ var AccountDevices = require("../models/AccountDevices");
 var accountService = require("../services/AccountService");
 var accessTokenService = require("../services/AccessTokenService");
 var accountsPhoneContactService = require("../services/AccountsPhoneContactService");
+var uploadFileHelper = require("../helpers/UploadFileHelper");
 
 /* POST Register */
 router.post('/register', [function(req, res, next) {
@@ -322,9 +323,9 @@ router.post('/updateProfile', [accessTokenService.checkAccessToken, function(req
 
     var accessTokenObj = req.accessTokenObj;
     var myAccount = accessTokenObj.account;
-    delete myAccount.password;
 
     var fullname = req.body.fullname ? req.body.fullname : "";
+    var status = req.body.status ? req.body.status : "";
     var birthday = req.body.birthday ? new Date(req.body.birthday) : "";
     var phone = req.body.phone ? req.body.phone : "";
     var gender = req.body.gender ? req.body.gender : "";
@@ -334,6 +335,7 @@ router.post('/updateProfile', [accessTokenService.checkAccessToken, function(req
     var gpsPersonCanSearchMe = req.body.gpsPersonCanSearchMe ? req.body.gpsPersonCanSearchMe.toUpperCase() : "ALL";
 
     myAccount.fullname = fullname;
+    myAccount.status = status;
     myAccount.birthday = birthday;
     myAccount.phone = phone;
     myAccount.gender = gender;
@@ -352,5 +354,89 @@ router.post('/updateProfile', [accessTokenService.checkAccessToken, function(req
         res.json(responseObj);
     });
 }]);
+
+/* POST update avatar */
+router.post('/updateAvatar', [accessTokenService.checkAccessToken, function(req, res, next) {
+    var responseObj = new ResponseServerDto();
+
+    var accessTokenObj = req.accessTokenObj;
+    var myAccount = accessTokenObj.account;
+
+    var fileNamePre = Constant.UPLOAD_FILE_CONFIG.PRE_NAME_IMAGE.ACCOUNT_AVATAR.replace("#ID", myAccount.accountId);
+    var folderNamePre = Constant.UPLOAD_FILE_CONFIG.PRE_FOLDER_IMAGE.ACCOUNT_AVATAR.replace("#ID", myAccount.accountId);
+    var maxSize = Constant.UPLOAD_FILE_CONFIG.MAX_SIZE_IMAGE.ACCOUNT_AVATAR;
+
+    accountService.uploadFile(req, fileNamePre, folderNamePre, maxSize).then(function(data){
+        myAccount.avatarImage = data;
+
+        accountService.update(myAccount.accountId, myAccount).then(function(dataRemove){
+            responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
+            responseObj.results = myAccount;
+            res.json(responseObj);
+        }, function(err){
+            logger.error(JSON.stringify(err));
+            responseObj = serviceUtil.generateObjectError(responseObj, err);
+            res.json(responseObj);
+        });
+    }, function(err){
+        logger.error(JSON.stringify(err));
+        responseObj = serviceUtil.generateObjectError(responseObj, err);
+        res.json(responseObj);
+    })
+
+}]);
+
+/**
+ * view account avatar files. this is public api, without accesstoken
+ * */
+router.get('/:accountId/view-avatar/:file', function (req, res) {
+    var id = req.params.accountId;
+    var fileName = req.params.file;
+    var folder = Constant.UPLOAD_FILE_CONFIG.PRE_FOLDER_IMAGE.ACCOUNT_AVATAR.replace("#ID", id);
+    var filePath = folder + fileName;
+    uploadFileHelper.viewFile(res, filePath);
+});
+
+/* POST update cover */
+router.post('/updateCover', [accessTokenService.checkAccessToken, function(req, res, next) {
+    var responseObj = new ResponseServerDto();
+
+    var accessTokenObj = req.accessTokenObj;
+    var myAccount = accessTokenObj.account;
+
+    var fileNamePre = Constant.UPLOAD_FILE_CONFIG.PRE_NAME_IMAGE.ACCOUNT_COVER.replace("#ID", myAccount.accountId);
+    var folderNamePre = Constant.UPLOAD_FILE_CONFIG.PRE_FOLDER_IMAGE.ACCOUNT_COVER.replace("#ID", myAccount.accountId);
+    var maxSize = Constant.UPLOAD_FILE_CONFIG.MAX_SIZE_IMAGE.ACCOUNT_COVER;
+
+    accountService.uploadFile(req, fileNamePre, folderNamePre, maxSize).then(function(data){
+        myAccount.coverImage = data;
+
+        accountService.update(myAccount.accountId, myAccount).then(function(dataRemove){
+            responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
+            responseObj.results = myAccount;
+            res.json(responseObj);
+        }, function(err){
+            logger.error(JSON.stringify(err));
+            responseObj = serviceUtil.generateObjectError(responseObj, err);
+            res.json(responseObj);
+        });
+    }, function(err){
+        logger.error(JSON.stringify(err));
+        responseObj = serviceUtil.generateObjectError(responseObj, err);
+        res.json(responseObj);
+    })
+
+}]);
+
+/**
+ * view account avatar files. this is public api, without accesstoken
+ * */
+router.get('/:accountId/view-cover/:file', function (req, res) {
+    var id = req.params.accountId;
+    var fileName = req.params.file;
+    var folder = Constant.UPLOAD_FILE_CONFIG.PRE_FOLDER_IMAGE.ACCOUNT_COVER.replace("#ID", id);
+    var filePath = folder + fileName;
+    uploadFileHelper.viewFile(res, filePath);
+});
 
 module.exports = router;

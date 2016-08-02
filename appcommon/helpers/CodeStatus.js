@@ -94,6 +94,20 @@ var ACCOUNT_ACTION = {
             code : 2200,
             message : "Data sync contact is empty."
         }
+    },
+    UPLOAD_FILE :{
+        UPLOAD_FILE_ERROR : {
+            code : 2300,
+            message : "Upload file error."
+        },
+        FILE_EMPTY : {
+            code : 2301,
+            message : "File is empty."
+        },
+        FILE_LIMITED_SIZE : {
+            code : 2302,
+            message : "File is limited size."
+        }
     }
 }
 

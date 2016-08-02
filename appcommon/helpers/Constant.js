@@ -30,6 +30,23 @@ var TABLE_NAME_DB = {
     }
 }
 
+var UPLOAD_FILE_CONFIG = {
+    MAX_SIZE_IMAGE : {
+        ACCOUNT_AVATAR : 3145728,//3Mb
+        ACCOUNT_COVER : 5242880,//5Mb
+    },
+    //UPLOAD_FOLDER : "/home/develop/deploys/ChoVietMoiService/uploads",
+    UPLOAD_FOLDER : "/Users/ChungTV/WebstormProjects/Nodejs-MySql/PokeChatTeamService/uploads",
+    PRE_FOLDER_IMAGE : {
+        ACCOUNT_AVATAR : "/Images/Account/#ID/",
+        ACCOUNT_COVER : "/Images/Account/#ID/",
+    },
+    PRE_NAME_IMAGE : {
+        ACCOUNT_AVATAR : "ACCOUNT_AVATAR_#ID",
+        ACCOUNT_COVER : "ACCOUNT_COVER_#ID",
+    }
+}
+
 var DEVICE_TYPE = {
     "IOS" : "iOS",
     "ANDROID" : "Android",
@@ -53,5 +70,6 @@ var GET_INFO_FB = {
 module.exports = {
     TABLE_NAME_DB : TABLE_NAME_DB,
     DEVICE_TYPE : DEVICE_TYPE,
-    GET_INFO_FB : GET_INFO_FB
+    GET_INFO_FB : GET_INFO_FB,
+    UPLOAD_FILE_CONFIG : UPLOAD_FILE_CONFIG
 }

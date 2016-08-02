@@ -41,7 +41,8 @@ accessTokenService.checkAccessToken = function(req, res, next){
             accountService.detail(accessTokenObj.accountId).then(function(data){
                 if(data && data.length > 0){
                     var account = data[0];
-                    account.password = "******";
+                    //account.password = "******";
+                    delete account.password;
                     accessTokenObj.account = account;
                     req.accessTokenObj = accessTokenObj;
                     next();

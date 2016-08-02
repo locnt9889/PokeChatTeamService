@@ -3,6 +3,7 @@
  */
 var Q = require('q');
 var request = require('request');
+var multiparty = require('multiparty');
 
 var Constant = require("../helpers/Constant");
 var CodeStatus = require("../helpers/CodeStatus");
@@ -13,6 +14,7 @@ var accountDao = require("../daos/AccountDao");
 var accountService = new GenericService(accountDao);
 
 var serviceUtil = require("../utils/ServiceUtil");
+var uploadFileHelper = require("../helpers/UploadFileHelper");
 
 accountService.getInfoFacebookToken = function(facebookToken){
     var deferred = Q.defer();
@@ -64,6 +66,43 @@ accountService.addAccessToken = function(res, account, responseObj){
         responseObj = serviceUtil.generateObjectError(responseObj, error);
         res.json(responseObj);
     });
+}
+
+accountService.uploadFile = function(req, fileNamePre, folderNamePre, maxSize){
+    var deferred = Q.defer();
+
+    var form = new multiparty.Form();
+    form.parse(req, function(err, fields, files) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            var errorObj = CodeStatus.ACCOUNT_ACTION.UPLOAD_FILE.UPLOAD_FILE_ERROR;
+            errorObj.error = err;
+            deferred.reject(errorObj);
+            return;
+        }
+        if (files.imageFile.length == 0 || files.imageFile[0].size == 0) {
+            logger.error(JSON.stringify(CodeStatus.ACCOUNT_ACTION.UPLOAD_FILE.FILE_EMPTY));
+            deferred.reject(CodeStatus.ACCOUNT_ACTION.UPLOAD_FILE.FILE_EMPTY);
+            return;
+        }
+        if (files.imageFile[0].size > maxSize) {
+            logger.error(JSON.stringify(CodeStatus.ACCOUNT_ACTION.UPLOAD_FILE.FILE_LIMITED_SIZE));
+            deferred.reject(CodeStatus.ACCOUNT_ACTION.UPLOAD_FILE.FILE_LIMITED_SIZE);
+            return;
+        }
+
+        uploadFileHelper.writeFileUpload(files.imageFile[0].originalFilename, fileNamePre, files.imageFile[0].path, folderNamePre).then(function (fullFilePath) {
+            deferred.resolve(fullFilePath);
+        }, function (err) {
+            logger.error(JSON.stringify(err));
+            var errorObj = CodeStatus.ACCOUNT_ACTION.UPLOAD_FILE.UPLOAD_FILE_ERROR;
+            errorObj.error = err;
+            deferred.reject(errorObj);
+            return;
+        });
+    });
+
+    return deferred.promise;
 }
 
 /*Exports*/
