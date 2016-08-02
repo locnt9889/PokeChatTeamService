@@ -40,8 +40,8 @@ var UPLOAD_FILE_CONFIG = {
     },
     UPLOAD_FOLDER : FOLDER_ROOT + "/uploads",
     PRE_FOLDER_IMAGE : {
-        ACCOUNT_AVATAR : "/Images/Account/#ID/Avatars",
-        ACCOUNT_COVER : "/Images/Account/#ID/Covers",
+        ACCOUNT_AVATAR : "/Images/Account/#ID/Avatars/",
+        ACCOUNT_COVER : "/Images/Account/#ID/Covers/",
     },
     PRE_NAME_IMAGE : {
         ACCOUNT_AVATAR : "ACCOUNT_AVATAR_#ID",
