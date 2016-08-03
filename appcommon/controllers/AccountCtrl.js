@@ -324,25 +324,16 @@ router.post('/updateProfile', [accessTokenService.checkAccessToken, function(req
     var accessTokenObj = req.accessTokenObj;
     var myAccount = accessTokenObj.account;
 
-    var fullname = req.body.fullname ? req.body.fullname : "";
-    var status = req.body.status ? req.body.status : "";
-    var birthday = req.body.birthday ? new Date(req.body.birthday) : "";
-    var phone = req.body.phone ? req.body.phone : "";
-    var gender = req.body.gender ? req.body.gender : "";
-    var gpsLatitude = req.body.gpsLatitude ? req.body.gpsLatitude : "";
-    var gpsLongitude = req.body.gpsLongitude ? req.body.gpsLongitude : "";
-    var isCanSearchMeByGPS = req.body.isCanSearchMeByGPS ? true : false;
-    var gpsPersonCanSearchMe = req.body.gpsPersonCanSearchMe ? req.body.gpsPersonCanSearchMe.toUpperCase() : "ALL";
+    myAccount.fullname = req.body.fullname ? req.body.fullname : myAccount.fullname;
+    myAccount.status = req.body.status ? req.body.status : myAccount.status;
+    myAccount.birthday = req.body.birthday ? req.body.birthday : myAccount.birthday;
+    myAccount.phone = req.body.phone ? req.body.phone : myAccount.phone;
+    myAccount.gpsLatitude = req.body.gpsLatitude ? req.body.gpsLatitude : myAccount.gpsLatitude;
+    myAccount.gpsLongitude = req.body.gpsLongitude ? req.body.gpsLongitude : myAccount.gpsLongitude;
+    myAccount.gpsPersonCanSearchMe = req.body.gpsPersonCanSearchMe ? req.body.gpsPersonCanSearchMe.toUpperCase() : myAccount.gpsPersonCanSearchMe;
 
-    myAccount.fullname = fullname;
-    myAccount.status = status;
-    myAccount.birthday = birthday;
-    myAccount.phone = phone;
-    myAccount.gender = gender;
-    myAccount.gpsLatitude = gpsLatitude;
-    myAccount.gpsLongitude = gpsLongitude;
-    myAccount.isCanSearchMeByGPS = isCanSearchMeByGPS;
-    myAccount.gpsPersonCanSearchMe = gpsPersonCanSearchMe;
+    myAccount.gender = req.body.gender != undefined ? req.body.gender : myAccount.gender;
+    myAccount.isCanSearchMeByGPS = req.body.isCanSearchMeByGPS != undefined ? req.body.isCanSearchMeByGPS : myAccount.isCanSearchMeByGPS;
 
     accountService.update(myAccount.accountId, myAccount).then(function(dataRemove){
         responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
