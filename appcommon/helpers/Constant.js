@@ -13,6 +13,9 @@ var TABLE_NAME_DB = {
         NAME_FIELD_ID : "accountId",
         NAME_FIELD_ACTIVE : "isActive",
         NAME_FIELD_EMAIL : "email",
+        NAME_FIELD_FULLNAME : "fullname",
+        NAME_FIELD_PHONE : "phone",
+        NAME_FIELD_GENDER : "gender",
         NAME_FIELD_FACEBOOKID : "facebookId",
         NAME_FIELD_PASSWORD : "password"
     },
@@ -54,6 +57,19 @@ var DEVICE_TYPE = {
     "ANDROID" : "Android",
     "WINDOW_PHONE" : "WindowPhone"
 }
+var ACCOUNT_GENDER = {
+    "ALL" : "ALL",
+    "MALE" : "MALE",
+    "FEMALE" : "FEMALE"
+}
+
+var ACCOUNT_SEARCH_TYPE = {
+    "ALL" : "ALL",
+    "NAME" : "NAME",
+    "EMAIL" : "EMAIL",
+    "PHONE" : "PHONE"
+}
+
 var GET_INFO_FB = {
     USER_FB_AVATAR_LINK : "https://graph.facebook.com/#fbID/picture?type=large",
     URL_CHECK_FB_TOKEN : "https://graph.facebook.com/me?access_token=",
@@ -74,5 +90,7 @@ module.exports = {
     DEVICE_TYPE : DEVICE_TYPE,
     GET_INFO_FB : GET_INFO_FB,
     UPLOAD_FILE_CONFIG : UPLOAD_FILE_CONFIG,
-    FOLDER_ROOT : FOLDER_ROOT
+    FOLDER_ROOT : FOLDER_ROOT,
+    ACCOUNT_GENDER : ACCOUNT_GENDER,
+    ACCOUNT_SEARCH_TYPE : ACCOUNT_SEARCH_TYPE
 }

@@ -66,7 +66,7 @@ var ACCOUNT_ACTION = {
         },
         DEVICE_TYPE_INCORRECT : {
             code : 2103,
-            message : "Device type is incorret. Please choose iOS,Android or WindowPhone"
+            message : "Device type is incorrect. Please choose iOS,Android or WindowPhone"
         },
         EMPTY_FIELD_REQUIRE : {
             code : 2104,
@@ -107,6 +107,16 @@ var ACCOUNT_ACTION = {
         FILE_LIMITED_SIZE : {
             code : 2302,
             message : "File is limited size."
+        }
+    },
+    SEARCH_ACCOUNT :{
+        SEARCH_TYPE_ERROR : {
+            code : 2400,
+            message : "Search type is incorrect. Please choose ALL, NAME, EMAIL or PHONE."
+        },
+        SEARCH_STRING_EMPTY : {
+            code : 2401,
+            message : "Search string is require field."
         }
     }
 }

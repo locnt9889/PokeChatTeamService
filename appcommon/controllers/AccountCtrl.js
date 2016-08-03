@@ -430,4 +430,49 @@ router.get('/:accountId/view-cover/:file', function (req, res) {
     uploadFileHelper.viewFile(res, filePath);
 });
 
+/* POST searchByString */
+router.post('/searchByString', [accessTokenService.checkAccessToken, function(req, res, next) {
+    var responseObj = new ResponseServerDto();
+
+    var accessTokenObj = req.accessTokenObj;
+    var myAccount = accessTokenObj.account;
+
+    var searchStr = req.body.searchStr ? req.body.searchStr : "";
+    var searchType = req.body.searchType ? req.body.searchType : "";
+    var gender = req.body.gender ? req.body.gender : "";
+    var perPage = req.body.perPage && !isNaN(req.body.perPage)? parseInt(req.body.perPage) : 10;
+    var pageNum = req.body.pageNum && !isNaN(req.body.pageNum)? parseInt(req.body.pageNum) : 1;
+
+    if(checkValidateUtil.isEmptyFeild(searchStr)){
+        logger.error(CodeStatus.ACCOUNT_ACTION.SEARCH_ACCOUNT.SEARCH_STRING_EMPTY.message);
+        responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.ACCOUNT_ACTION.SEARCH_ACCOUNT.SEARCH_STRING_EMPTY);
+        res.json(responseObj);
+        return;
+    }
+
+    if(searchType != Constant.ACCOUNT_SEARCH_TYPE.NAME && searchType != Constant.ACCOUNT_SEARCH_TYPE.PHONE
+        && searchType != Constant.ACCOUNT_SEARCH_TYPE.EMAIL && searchType != Constant.ACCOUNT_SEARCH_TYPE.ALL){
+        logger.error(CodeStatus.ACCOUNT_ACTION.SEARCH_ACCOUNT.SEARCH_TYPE_ERROR.message);
+        responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.ACCOUNT_ACTION.SEARCH_ACCOUNT.SEARCH_TYPE_ERROR);
+        res.json(responseObj);
+        return;
+    }
+
+    accountService.searchByString(gender, searchType, searchStr, perPage, pageNum).then(function(data){
+        responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
+        if(data && data.items) {
+            for (var i = 0; i < data.items.length; i++) {
+                data.items[i].password = "******";
+            }
+        }
+        responseObj.results = data;
+        res.json(responseObj);
+    }, function(err){
+        logger.error(JSON.stringify(err));
+        responseObj = serviceUtil.generateObjectError(responseObj, err);
+        res.json(responseObj);
+    })
+
+}]);
+
 module.exports = router;

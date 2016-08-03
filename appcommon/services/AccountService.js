@@ -105,5 +105,30 @@ accountService.uploadFile = function(req, fileNamePre, folderNamePre, maxSize){
     return deferred.promise;
 }
 
+accountService.searchByString = function(gender, searchType, searchStr, perPage, pageNum){
+    var genderQuery = "";
+    var likeQuery = "";
+
+    if(gender != Constant.ACCOUNT_GENDER.MALE && gender != Constant.ACCOUNT_GENDER.FEMALE){
+        genderQuery = "1";
+    }else{
+        genderQuery = Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_GENDER + "=" + gender;
+    }
+
+    if(searchType == Constant.ACCOUNT_SEARCH_TYPE.EMAIL){
+        likeQuery = Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_EMAIL + " like '%" + searchStr + "%'";
+    } else if(searchType == Constant.ACCOUNT_SEARCH_TYPE.NAME){
+        likeQuery = Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_FULLNAME + " like '%" + searchStr + "%'";
+    } else if(searchType == Constant.ACCOUNT_SEARCH_TYPE.PHONE){
+        likeQuery = Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_PHONE + " like '%" + searchStr + "%'";
+    } else{
+        likeQuery = "(" + Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_EMAIL + " like '%" + searchStr + "%'";
+        likeQuery += " OR " + Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_FULLNAME + " like '%" + searchStr + "%'"
+        likeQuery += " OR " + Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_PHONE + " like '%" + searchStr + "%'" + ")";
+    }
+
+    return accountDao.searchAccountByString(genderQuery, likeQuery, perPage, pageNum);
+}
+
 /*Exports*/
 module.exports = accountService;
