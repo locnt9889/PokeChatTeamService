@@ -440,8 +440,8 @@ router.post('/searchByString', [accessTokenService.checkAccessToken, function(re
     var searchStr = req.body.searchStr ? req.body.searchStr : "";
     var searchType = req.body.searchType ? req.body.searchType : "";
     var gender = req.body.gender ? req.body.gender : "";
-    var perPage = req.body.perPage && !isNaN(req.body.perPage)? parseInt(req.body.perPage) : 10;
-    var pageNum = req.body.pageNum && !isNaN(req.body.pageNum)? parseInt(req.body.pageNum) : 1;
+    var perPage = req.body.perPage ? req.body.perPage : 10;
+    var pageNum = req.body.pageNum ? req.body.pageNum : 1;
 
     if(checkValidateUtil.isEmptyFeild(searchStr)){
         logger.error(CodeStatus.ACCOUNT_ACTION.SEARCH_ACCOUNT.SEARCH_STRING_EMPTY.message);
@@ -458,13 +458,53 @@ router.post('/searchByString', [accessTokenService.checkAccessToken, function(re
         return;
     }
 
-    accountService.searchByString(gender, searchType, searchStr, perPage, pageNum).then(function(data){
+    if(gender != Constant.ACCOUNT_GENDER.ALL && gender != Constant.ACCOUNT_GENDER.MALE && gender != Constant.ACCOUNT_GENDER.FEMALE){
+        logger.error(CodeStatus.ACCOUNT_ACTION.SEARCH_ACCOUNT.GENDER_ERROR.message);
+        responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.ACCOUNT_ACTION.SEARCH_ACCOUNT.GENDER_ERROR);
+        res.json(responseObj);
+        return;
+    }
+
+    accountService.searchByString(myAccount.accountId, gender, searchType, searchStr, perPage, pageNum).then(function(data){
         responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
         if(data && data.items) {
             for (var i = 0; i < data.items.length; i++) {
                 data.items[i].password = "******";
             }
         }
+        responseObj.results = data;
+        res.json(responseObj);
+    }, function(err){
+        logger.error(JSON.stringify(err));
+        responseObj = serviceUtil.generateObjectError(responseObj, err);
+        res.json(responseObj);
+    })
+
+}]);
+
+/* POST searchNear */
+router.post('/searchNear', [accessTokenService.checkAccessToken, function(req, res, next) {
+    var responseObj = new ResponseServerDto();
+
+    var accessTokenObj = req.accessTokenObj;
+    var myAccount = accessTokenObj.account;
+
+    var gender = req.body.gender ? req.body.gender : "";
+    var perPage = req.body.perPage ? req.body.perPage : 10;
+    var pageNum = req.body.pageNum ? req.body.pageNum : 1;
+    var gpsLongitude = req.body.gpsLongitude ? req.body.gpsLongitude : 0;
+    var gpsLatitude = req.body.gpsLatitude ? req.body.gpsLatitude : 0;
+    var distanceMax = req.body.distanceMax ? req.body.distanceMax : 0;
+
+    if(gender != Constant.ACCOUNT_GENDER.ALL && gender != Constant.ACCOUNT_GENDER.MALE && gender != Constant.ACCOUNT_GENDER.FEMALE){
+        logger.error(CodeStatus.ACCOUNT_ACTION.SEARCH_ACCOUNT.GENDER_ERROR.message);
+        responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.ACCOUNT_ACTION.SEARCH_ACCOUNT.GENDER_ERROR);
+        res.json(responseObj);
+        return;
+    }
+
+    accountService.searchNearAccount(myAccount.accountId, gender, gpsLongitude, gpsLatitude, distanceMax, perPage, pageNum).then(function(data){
+        responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
         responseObj.results = data;
         res.json(responseObj);
     }, function(err){

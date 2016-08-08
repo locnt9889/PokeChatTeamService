@@ -117,7 +117,11 @@ var ACCOUNT_ACTION = {
         SEARCH_STRING_EMPTY : {
             code : 2401,
             message : "Search string is require field."
-        }
+        },
+        GENDER_ERROR : {
+            code : 2402,
+            message : "Search gender is incorrect. Please choose ALL, MALE, FEMALE"
+        },
     }
 }
 

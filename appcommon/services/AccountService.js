@@ -105,9 +105,10 @@ accountService.uploadFile = function(req, fileNamePre, folderNamePre, maxSize){
     return deferred.promise;
 }
 
-accountService.searchByString = function(gender, searchType, searchStr, perPage, pageNum){
+accountService.searchByString = function(myAccountId, gender, searchType, searchStr, perPage, pageNum){
     var genderQuery = "";
     var likeQuery = "";
+    var myAccountQuery = "accountId != " + myAccountId;
 
     if(gender != Constant.ACCOUNT_GENDER.MALE && gender != Constant.ACCOUNT_GENDER.FEMALE){
         genderQuery = "1";
@@ -127,8 +128,30 @@ accountService.searchByString = function(gender, searchType, searchStr, perPage,
         likeQuery += " OR " + Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_PHONE + " like '%" + searchStr + "%'" + ")";
     }
 
-    return accountDao.searchAccountByString(genderQuery, likeQuery, perPage, pageNum);
+    return accountDao.searchAccountByString(myAccountQuery, genderQuery, likeQuery, perPage, pageNum);
 }
+
+/**
+ * get distance of 2 location
+ * @param type latUser
+ * @param type longUser
+ * @param type distMin
+ * @return double (mét)
+ * round(acos(sin($lat1*pi()/180)*sin($lat2*pi()/180) + cos($lat1*pi()/180)*cos($lat2*PI()/180)*cos($long2*PI()/180-$long1*pi()/180)) * 6371000, 2)
+ */
+accountService.searchNearAccount = function(myAccountId, gender, gpsLongitude, gpsLatitude, distanceMax, perPage, pageNum){
+    var genderQuery = "";
+    var myAccountQuery = "accountId != " + myAccountId;
+
+    if(gender != Constant.ACCOUNT_GENDER.MALE && gender != Constant.ACCOUNT_GENDER.FEMALE){
+        genderQuery = "1";
+    }else{
+        genderQuery = Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_GENDER + "=" + gender;
+    }
+
+    return accountDao.getShopNearWithDistance(myAccountQuery, gpsLatitude, gpsLongitude, distanceMax, genderQuery, perPage, pageNum);
+
+};
 
 /*Exports*/
 module.exports = accountService;
