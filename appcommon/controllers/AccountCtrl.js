@@ -440,8 +440,8 @@ router.post('/searchByString', [accessTokenService.checkAccessToken, function(re
     var searchStr = req.body.searchStr ? req.body.searchStr : "";
     var searchType = req.body.searchType ? req.body.searchType : "";
     var gender = req.body.gender ? req.body.gender.toUpperCase() : "";
-    var perPage = req.body.perPage ? req.body.perPage : 10;
-    var pageNum = req.body.pageNum ? req.body.pageNum : 1;
+    var perPage = req.body.perPage && !isNaN(req.body.perPage)? parseInt(req.body.perPage) : 10;
+    var pageNum = req.body.pageNum && !isNaN(req.body.pageNum)? parseInt(req.body.pageNum) : 1;
 
     if(checkValidateUtil.isEmptyFeild(searchStr)){
         logger.error(CodeStatus.ACCOUNT_ACTION.SEARCH_ACCOUNT.SEARCH_STRING_EMPTY.message);
@@ -490,8 +490,8 @@ router.post('/searchNear', [accessTokenService.checkAccessToken, function(req, r
     var myAccount = accessTokenObj.account;
 
     var gender = req.body.gender ? req.body.gender.toLocaleUpperCase() : "";
-    var perPage = req.body.perPage ? req.body.perPage : 10;
-    var pageNum = req.body.pageNum ? req.body.pageNum : 1;
+    var perPage = req.body.perPage && !isNaN(req.body.perPage)? parseInt(req.body.perPage) : 10;
+    var pageNum = req.body.pageNum && !isNaN(req.body.pageNum)? parseInt(req.body.pageNum) : 1;
     var gpsLongitude = req.body.gpsLongitude ? req.body.gpsLongitude : 0;
     var gpsLatitude = req.body.gpsLatitude ? req.body.gpsLatitude : 0;
     var distanceMax = req.body.distanceMax ? req.body.distanceMax : 0;
