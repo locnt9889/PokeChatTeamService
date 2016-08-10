@@ -493,7 +493,7 @@ router.post('/searchNear', [accessTokenService.checkAccessToken, function(req, r
     var perPage = req.body.perPage && !isNaN(req.body.perPage)? parseInt(req.body.perPage) : 10;
     var pageNum = req.body.pageNum && !isNaN(req.body.pageNum)? parseInt(req.body.pageNum) : 1;
     var gpsLatitude = req.body.gpsLatitude && !isNaN(req.body.gpsLatitude)? parseInt(req.body.gpsLatitude) : 0;
-    var gpsLatitude = req.body.gpsLatitude && !isNaN(req.body.gpsLatitude)? parseInt(req.body.gpsLatitude) : 0;
+    var gpsLongitude = req.body.gpsLongitude && !isNaN(req.body.gpsLongitude)? parseInt(req.body.gpsLongitude) : 0;
     var distanceMax = req.body.distanceMax && !isNaN(req.body.distanceMax)? parseInt(req.body.distanceMax) : 0;
 
     if(gender != Constant.ACCOUNT_GENDER.ALL && gender != Constant.ACCOUNT_GENDER.MALE && gender != Constant.ACCOUNT_GENDER.FEMALE){
