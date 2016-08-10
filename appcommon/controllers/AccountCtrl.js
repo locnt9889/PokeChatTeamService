@@ -439,7 +439,7 @@ router.post('/searchByString', [accessTokenService.checkAccessToken, function(re
 
     var searchStr = req.body.searchStr ? req.body.searchStr : "";
     var searchType = req.body.searchType ? req.body.searchType : "";
-    var gender = req.body.gender ? req.body.gender : "";
+    var gender = req.body.gender ? req.body.gender.toUpperCase() : "";
     var perPage = req.body.perPage ? req.body.perPage : 10;
     var pageNum = req.body.pageNum ? req.body.pageNum : 1;
 
@@ -489,7 +489,7 @@ router.post('/searchNear', [accessTokenService.checkAccessToken, function(req, r
     var accessTokenObj = req.accessTokenObj;
     var myAccount = accessTokenObj.account;
 
-    var gender = req.body.gender ? req.body.gender : "";
+    var gender = req.body.gender ? req.body.gender.toLocaleUpperCase() : "";
     var perPage = req.body.perPage ? req.body.perPage : 10;
     var pageNum = req.body.pageNum ? req.body.pageNum : 1;
     var gpsLongitude = req.body.gpsLongitude ? req.body.gpsLongitude : 0;
