@@ -335,6 +335,7 @@ router.post('/updateProfile', [accessTokenService.checkAccessToken, function(req
     myAccount.gender = req.body.gender != undefined ? req.body.gender : myAccount.gender;
     myAccount.isCanSearchMeByGPS = req.body.isCanSearchMeByGPS != undefined ? req.body.isCanSearchMeByGPS : myAccount.isCanSearchMeByGPS;
 
+    myAccount.isUpdatedInfo = true;
     accountService.update(myAccount.accountId, myAccount).then(function(dataRemove){
         responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
         responseObj.results = myAccount;
