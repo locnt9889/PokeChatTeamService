@@ -78,7 +78,7 @@ var ACCOUNT_ACTION = {
         },
         LOGIN_FB_ERROR_GET_PROFILE_ACCESS : {
             code: 2106,
-            message: "Login facebook, get info of access token is failure!"
+            message: "Get info of access token is failure!"
         },
         LOGIN_FB_ERROR_EMAIL_NON_FB : {
             code: 2107,
@@ -86,7 +86,7 @@ var ACCOUNT_ACTION = {
         },
         LOGIN_FB_ERROR_ACCESS_TOKEN_INVALID : {
             code: 2108,
-            message: "Login facebook, access token is invalid!"
+            message: "Access token is invalid!"
         }
     },
     PHONE_CONTACT :{
@@ -122,6 +122,16 @@ var ACCOUNT_ACTION = {
             code : 2402,
             message : "Search gender is incorrect. Please choose ALL, MALE, FEMALE"
         },
+    },
+    LINK_ACCOUNT_WITH_FB :{
+        FACEBOOK_ID_EXISTED : {
+            code : 2500,
+            message : "Facebook ID of Account is existed."
+        },
+        FACEBOOK_ID_LINKED : {
+            code : 2401,
+            message : "Facebook Id is linked for other account."
+        }
     }
 }
 

@@ -515,4 +515,56 @@ router.post('/searchNear', [accessTokenService.checkAccessToken, function(req, r
 
 }]);
 
+/* POST login with email */
+router.post('/linkToFb', [accessTokenService.checkAccessToken, function(req, res, next) {
+    var responseObj = new ResponseServerDto();
+
+    var accessTokenObj = req.accessTokenObj;
+    var myAccount = accessTokenObj.account;
+    var facebookToken = req.body.facebookToken ? req.body.facebookToken : "";
+
+    if(myAccount.facebookId != ""){
+        logger.error(CodeStatus.ACCOUNT_ACTION.LINK_ACCOUNT_WITH_FB.FACEBOOK_ID_EXISTED.message);
+        responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.ACCOUNT_ACTION.LINK_ACCOUNT_WITH_FB.FACEBOOK_ID_EXISTED);
+        res.json(responseObj);
+        return;
+    }
+
+    accountService.getInfoFacebookToken(facebookToken).then(function(jsonObj){
+        var facebookId = jsonObj.id;
+        var objectSearch = {};
+        objectSearch[Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_FACEBOOKID] = facebookId;
+
+        accountService.searchBase(objectSearch).then(function(resultSearch){
+            if(!resultSearch || resultSearch.length == 0){
+                myAccount.facebookId = jsonObj.id;
+                myAccount.facebookToken = facebookToken;
+
+                accountService.update(myAccount.accountId , myAccount).then(function(resultUpdateAccount){
+                    responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
+                    responseObj.results = myAccount;
+                    res.json(responseObj);
+                }, function(error){
+                    logger.error(JSON.stringify(error));
+                    responseObj = serviceUtil.generateObjectError(responseObj, error);
+                    res.json(responseObj);
+                });
+            }else{
+                logger.error(CodeStatus.ACCOUNT_ACTION.LINK_ACCOUNT_WITH_FB.FACEBOOK_ID_LINKED.message);
+                responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.ACCOUNT_ACTION.LINK_ACCOUNT_WITH_FB.FACEBOOK_ID_LINKED);
+                res.json(responseObj);
+                return;
+            }
+        }, function(err){
+            logger.error(JSON.stringify(err));
+            responseObj = serviceUtil.generateObjectError(responseObj,err);
+            res.send(responseObj);
+        });
+    }, function(err){
+        logger.error(JSON.stringify(err));
+        responseObj = serviceUtil.generateObjectError(responseObj, err);
+        res.json(responseObj);
+    })
+}]);
+
 module.exports = router;
