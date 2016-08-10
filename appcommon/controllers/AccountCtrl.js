@@ -492,9 +492,9 @@ router.post('/searchNear', [accessTokenService.checkAccessToken, function(req, r
     var gender = req.body.gender ? req.body.gender.toLocaleUpperCase() : "";
     var perPage = req.body.perPage && !isNaN(req.body.perPage)? parseInt(req.body.perPage) : 10;
     var pageNum = req.body.pageNum && !isNaN(req.body.pageNum)? parseInt(req.body.pageNum) : 1;
-    var gpsLongitude = req.body.gpsLongitude ? req.body.gpsLongitude : 0;
-    var gpsLatitude = req.body.gpsLatitude ? req.body.gpsLatitude : 0;
-    var distanceMax = req.body.distanceMax ? req.body.distanceMax : 0;
+    var gpsLatitude = req.body.gpsLatitude && !isNaN(req.body.gpsLatitude)? parseInt(req.body.gpsLatitude) : 0;
+    var gpsLatitude = req.body.gpsLatitude && !isNaN(req.body.gpsLatitude)? parseInt(req.body.gpsLatitude) : 0;
+    var distanceMax = req.body.distanceMax && !isNaN(req.body.distanceMax)? parseInt(req.body.distanceMax) : 0;
 
     if(gender != Constant.ACCOUNT_GENDER.ALL && gender != Constant.ACCOUNT_GENDER.MALE && gender != Constant.ACCOUNT_GENDER.FEMALE){
         logger.error(CodeStatus.ACCOUNT_ACTION.SEARCH_ACCOUNT.GENDER_ERROR.message);
