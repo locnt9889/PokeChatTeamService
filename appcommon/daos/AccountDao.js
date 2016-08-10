@@ -84,20 +84,20 @@ accountDao.getShopNearWithDistance = function(myAccountQuery, latUser, longUser,
     sqlCount = sqlCount.replace("#myAccountQuery", myAccountQuery);
 
     if(distanceMax > 0){
-        sqlCount += " AND round(acos(sin(?*pi()/180)*sin(gpsLatitude*pi()/180) + cos(?*pi()/180)*cos(gpsLatitude*PI()/180)*cos(?*PI()/180-gpsLongitude*pi()/180)) * 6371000, 2) > " + distanceMax;
+        sqlCount += " AND round(acos(sin(?*pi()/180)*sin(gpsLatitude*pi()/180) + cos(?*pi()/180)*cos(gpsLatitude*PI()/180)*cos(?*PI()/180-gpsLongitude*pi()/180)) * 6371000, 2) <= " + distanceMax;
     }
     var paramsCount = [Constant.TABLE_NAME_DB.ACCOUNTS.NAME, latUser, latUser, longUser];
 
     //build sql get data paging
     var sql = "SELECT *, " +
         "round(acos(sin(?*pi()/180)*sin(gpsLatitude*pi()/180) + cos(?*pi()/180)*cos(gpsLatitude*PI()/180)*cos(?*PI()/180-gpsLongitude*pi()/180)) * 6371000, 2) AS distanceM " +
-        "FROM ?? WHERE #myAccountQuery AND #genderQuery ORDER BY distanceM desc";
+        "FROM ?? WHERE #myAccountQuery AND #genderQuery"
     sql = sql.replace("#genderQuery", genderQuery);
     sql = sql.replace("#myAccountQuery", myAccountQuery);
     if(distanceMax > 0){
-        sql += " HAVING distanceM > " + distanceMax;
+        sql += " HAVING distanceM <= " + distanceMax;
     }
-    sql += " LIMIT ?, ?";
+    sql += " ORDER BY distanceM DESC LIMIT ?, ?";
     var params = [latUser, latUser, longUser, Constant.TABLE_NAME_DB.ACCOUNTS.NAME, start, perPage];
 
     accountDao.queryExecute(sqlCount, paramsCount).then(function(dataCount){
