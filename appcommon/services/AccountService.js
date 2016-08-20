@@ -16,6 +16,8 @@ var accountService = new GenericService(accountDao);
 var serviceUtil = require("../utils/ServiceUtil");
 var uploadFileHelper = require("../helpers/UploadFileHelper");
 
+var ResponseServerDto = require("../modelsDto/ResponseServerDto");
+
 accountService.getInfoFacebookToken = function(facebookToken){
     var deferred = Q.defer();
     var url = Constant.GET_INFO_FB.URL_CHECK_FB_TOKEN + facebookToken;
@@ -151,6 +153,35 @@ accountService.searchNearAccount = function(myAccountId, gender, gpsLongitude, g
 
     return accountDao.getShopNearWithDistance(myAccountQuery, gpsLatitude, gpsLongitude, distanceMax, genderQuery, perPage, pageNum);
 
+};
+/**
+ * check friend for make friendly
+ */
+accountService.checkFriendCorrect = function(req, res, next){
+    var responseObj = new ResponseServerDto();
+
+    var friendId = req.body.friendId && !isNaN(req.body.friendId)? parseInt(req.body.friendId) : 0;
+
+    var objSearch = {};
+    objSearch[Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_ID] = friendId;
+    objSearch[Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_ACTIVE] = true;
+
+    accountService.searchBase(objSearch).then(function(dataSearch){
+        if(dataSearch && dataSearch.length > 0){
+            //friend incorrect
+            req.body.friendId = friendId;
+            next();
+        }else{
+            logger.error(CodeStatus.ACCOUNT_ACTION.FRIENDLY_ACTION.FRIEND_ID_INCORRECT.message);
+            responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.ACCOUNT_ACTION.FRIENDLY_ACTION.FRIEND_ID_INCORRECT);
+            res.json(responseObj);
+            return;
+        }
+    }, function(err){
+        logger.error(JSON.stringify(err));
+        responseObj = serviceUtil.generateObjectError(responseObj, err);
+        res.json(responseObj);
+    });
 };
 
 /*Exports*/

@@ -29,8 +29,15 @@ var TABLE_NAME_DB = {
         NAME : "accounts_phone_contact",
         NAME_FIELD_ID : "id",
         NAME_FIELD_ACTIVE : "isActive",
-        NAME_FIELD_ACCOUNT_ID : "accountId"
-    }
+        NAME_FIELD_ACCOUNT_ID : "accountId",
+    },
+    ACCOUNT_FRIEND : {
+        NAME : "account_friend",
+        NAME_FIELD_ID : "id",
+        NAME_FIELD_ACCOUNT_ID : "accountId",
+        NAME_FIELD_FRIEND_ID : "friendId",
+        NAME_FIELD_FRIEND_STATUS : "friendStatus"
+    },
 }
 
 var FOLDER_ROOT = "/home/develop/deploys/PokeChatTeamService";
@@ -70,6 +77,13 @@ var ACCOUNT_SEARCH_TYPE = {
     "PHONE" : "PHONE"
 }
 
+var FRIEND_STATUS = {
+    "FRIEND" : "FRIEND",
+    "PEDDING" : "PEDDING",
+    "REQUESTING" : "REQUESTING",
+    "REMOVE" : "REMOVE"
+}
+
 var GET_INFO_FB = {
     USER_FB_AVATAR_LINK : "https://graph.facebook.com/#fbID/picture?type=large",
     URL_CHECK_FB_TOKEN : "https://graph.facebook.com/me?access_token=",
@@ -92,5 +106,6 @@ module.exports = {
     UPLOAD_FILE_CONFIG : UPLOAD_FILE_CONFIG,
     FOLDER_ROOT : FOLDER_ROOT,
     ACCOUNT_GENDER : ACCOUNT_GENDER,
-    ACCOUNT_SEARCH_TYPE : ACCOUNT_SEARCH_TYPE
+    ACCOUNT_SEARCH_TYPE : ACCOUNT_SEARCH_TYPE,
+    FRIEND_STATUS : FRIEND_STATUS
 }

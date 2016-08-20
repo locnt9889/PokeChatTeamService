@@ -15,13 +15,16 @@ var logger = require("../helpers/LoggerService");
 
 var Account = require("../models/Account");
 var AccountPhoneContact = require("../models/AccountPhoneContact");
-
+var AccountFriend = require("../models/AccountFriend");
 var AccountDevices = require("../models/AccountDevices");
 
 var accountService = require("../services/AccountService");
 var accessTokenService = require("../services/AccessTokenService");
 var accountsPhoneContactService = require("../services/AccountsPhoneContactService");
+var accountFriendService = require("../services/AccountFriendService");
+
 var uploadFileHelper = require("../helpers/UploadFileHelper");
+var Q = require("q");
 
 /* POST Register */
 router.post('/register', [function(req, res, next) {
@@ -566,6 +569,120 @@ router.post('/linkToFb', [accessTokenService.checkAccessToken, function(req, res
         responseObj = serviceUtil.generateObjectError(responseObj, err);
         res.json(responseObj);
     })
+}]);
+
+/* POST friendly action */
+router.post('/friendly', [accessTokenService.checkAccessToken, accountService.checkFriendCorrect, function(req, res, next) {
+    var responseObj = new ResponseServerDto();
+
+    var accessTokenObj = req.accessTokenObj;
+    var myAccount = accessTokenObj.account;
+    var accountId = myAccount.accountId;
+    var friendId = req.body.friendId;
+    var friendStatus = req.body.friendStatus;
+
+    if(checkValidateUtil.isEmptyFeild(friendStatus)){
+        logger.error(CodeStatus.ACCOUNT_ACTION.FRIENDLY_ACTION.FRIEND_STATUS_EMPTY.message);
+        responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.ACCOUNT_ACTION.FRIENDLY_ACTION.FRIEND_STATUS_EMPTY);
+        res.json(responseObj);
+        return;
+    }
+
+    if(friendStatus != Constant.FRIEND_STATUS.FRIEND && friendStatus != Constant.FRIEND_STATUS.REQUESTING
+        && friendStatus != Constant.FRIEND_STATUS.REMOVE){
+        logger.error(CodeStatus.ACCOUNT_ACTION.FRIENDLY_ACTION.FRIEND_STATUS_INCORRECT.message);
+        responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.ACCOUNT_ACTION.FRIENDLY_ACTION.FRIEND_STATUS_INCORRECT);
+        res.json(responseObj);
+        return;
+    }
+
+    var objectSearchFriend = {};
+    objectSearchFriend.friendId = friendId;
+
+    accountFriendService.searchBase(objectSearchFriend).then(function(resultFriend){
+        if(friendStatus == Constant.FRIEND_STATUS.REQUESTING){
+            if(resultFriend.length > 0 && resultFriend[0].friendStatus == Constant.FRIEND_STATUS.FRIEND){
+                logger.error(CodeStatus.ACCOUNT_ACTION.FRIENDLY_ACTION.REQUEST_ACCOUNT_IN_FRIEND_LIST.message);
+                responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.ACCOUNT_ACTION.FRIENDLY_ACTION.FRIEND_ACCOUNT_NO_REQUEST);
+                res.json(responseObj);
+                return;
+            } else {
+                accountFriendService.deletePairNoFriend(accountId, friendId).then(function(resultDelete){
+                    var friendMakeFrom = new AccountFriend();
+                    friendMakeFrom.accountId = accountId;
+                    friendMakeFrom.friendId = friendId;
+
+                    var friendMakeTo = new AccountFriend();
+                    friendMakeTo.friendId = accountId;
+                    friendMakeTo.accountId = friendId;
+
+                    friendMakeFrom.friendStatus = Constant.FRIEND_STATUS.REQUESTING;
+                    friendMakeTo.friendStatus = Constant.FRIEND_STATUS.PEDDING;
+
+                    Q.all(accountFriendService.create(friendMakeFrom), accountFriendService.create(friendMakeTo)).then(function (dataAdd) {
+                        logger.info(JSON.stringify(dataAdd));
+                        responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
+                        responseObj.results = dataAdd;
+                        res.json(responseObj);
+                    }, function (err) {
+                        logger.error(JSON.stringify(err));
+                        responseObj = serviceUtil.generateObjectError(responseObj, err);
+                        res.json(responseObj);
+                    });
+                }, function(err){
+                    logger.error(JSON.stringify(err));
+                    responseObj = serviceUtil.generateObjectError(responseObj,err);
+                    res.send(responseObj);
+                });
+            }
+        } else{
+            var objectSearchMyAccount = {};
+            objectSearchMyAccount.accountId = accountId;
+            objectSearchMyAccount.friendStatus = Constant.FRIEND_STATUS.PEDDING;
+
+            accountFriendService.searchBase(objectSearchMyAccount).then(function(resultMyAccount){
+                if(friendStatus == Constant.FRIEND_STATUS.FRIEND){
+                    if(resultFriend || resultFriend.friendStatus == Constant.FRIEND_STATUS.FRIEND){
+                        logger.error(CodeStatus.ACCOUNT_ACTION.FRIENDLY_ACTION.FRIEND_ACCOUNT_NO_REQUEST.message);
+                        responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.ACCOUNT_ACTION.FRIENDLY_ACTION.FRIEND_ACCOUNT_NO_REQUEST);
+                        res.json(responseObj);
+                        return;
+                    }else {
+                        accountFriendService.updateFriendStatus(accountId, friendId, friendStatus).then(function (updateStatus) {
+                            logger.info(JSON.stringify(updateStatus));
+                            responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
+                            responseObj.results = updateStatus;
+                            res.json(responseObj);
+                        }, function (err) {
+                            logger.error(JSON.stringify(err));
+                            responseObj = serviceUtil.generateObjectError(responseObj, err);
+                            res.send(responseObj);
+                        });
+                    }
+                }else{
+                    accountFriendService.deletePairNoFriend(accountId, friendId).then(function(resultDelete){
+                        logger.info(JSON.stringify(resultDelete));
+                        responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
+                        responseObj.results = resultDelete;
+                        res.json(responseObj);
+                    }, function(err){
+                        logger.error(JSON.stringify(err));
+                        responseObj = serviceUtil.generateObjectError(responseObj,err);
+                        res.send(responseObj);
+                    });
+                }
+            }, function(err){
+                logger.error(JSON.stringify(err));
+                responseObj = serviceUtil.generateObjectError(responseObj,err);
+                res.send(responseObj);
+            });
+        }
+    }, function(err){
+        logger.error(JSON.stringify(err));
+        responseObj = serviceUtil.generateObjectError(responseObj,err);
+        res.send(responseObj);
+    });
+
 }]);
 
 module.exports = router;

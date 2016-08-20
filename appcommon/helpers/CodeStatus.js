@@ -132,6 +132,28 @@ var ACCOUNT_ACTION = {
             code : 2401,
             message : "Facebook Id is linked for other account."
         }
+    },
+    FRIENDLY_ACTION :{
+        FRIEND_STATUS_EMPTY : {
+            code : 2601,
+            message : "Friend status is require field."
+        },
+        FRIEND_STATUS_INCORRECT : {
+            code : 2602,
+            message : "Friend status is incorrect."
+        },
+        FRIEND_ID_INCORRECT : {
+            code : 2603,
+            message : "Friend id is incorrect."
+        },
+        REQUEST_ACCOUNT_IN_FRIEND_LIST : {
+            code : 2604,
+            message : "Can not request with account in friend list."
+        },
+        FRIEND_ACCOUNT_NO_REQUEST : {
+            code : 2605,
+            message : "Can not make friend with account no have requesting friend with you."
+        }
     }
 }
 
