@@ -588,6 +588,8 @@ router.post('/friendly', [accessTokenService.checkAccessToken, accountService.ch
         return;
     }
 
+    friendStatus = friendStatus.toUpperCase();
+
     if(friendStatus != Constant.FRIEND_STATUS.FRIEND && friendStatus != Constant.FRIEND_STATUS.REQUESTING
         && friendStatus != Constant.FRIEND_STATUS.REMOVE){
         logger.error(CodeStatus.ACCOUNT_ACTION.FRIENDLY_ACTION.FRIEND_STATUS_INCORRECT.message);
@@ -677,6 +679,39 @@ router.post('/friendly', [accessTokenService.checkAccessToken, accountService.ch
                 res.send(responseObj);
             });
         }
+    }, function(err){
+        logger.error(JSON.stringify(err));
+        responseObj = serviceUtil.generateObjectError(responseObj,err);
+        res.send(responseObj);
+    });
+}]);
+
+/* POST get getFriendList */
+router.post('/getFriendList', [accessTokenService.checkAccessToken, function(req, res, next) {
+    var responseObj = new ResponseServerDto();
+
+    var accessTokenObj = req.accessTokenObj;
+    var myAccount = accessTokenObj.account;
+    var accountId = myAccount.accountId;
+    var friendStatus = req.body.friendStatus ? req.body.friendStatus.toUpperCase() : Constant.FRIEND_STATUS.ALL;
+
+    if(friendStatus != Constant.FRIEND_STATUS.FRIEND && friendStatus != Constant.FRIEND_STATUS.REQUESTING
+        && friendStatus != Constant.FRIEND_STATUS.REMOVE && friendStatus != Constant.FRIEND_STATUS.ALL){
+        logger.error(CodeStatus.ACCOUNT_ACTION.FRIENDLY_ACTION.FRIEND_STATUS_INCORRECT.message);
+        responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.ACCOUNT_ACTION.FRIENDLY_ACTION.FRIEND_STATUS_INCORRECT);
+        res.json(responseObj);
+        return;
+    }
+
+    var objectSearchFriend = {};
+    objectSearchFriend.friendStatus = friendStatus;
+    objectSearchFriend.accountId = accountId;
+
+    accountFriendService.getFriendList(accountId, friendStatus).then(function(friendList){
+        logger.info(JSON.stringify(friendList));
+        responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
+        responseObj.results = friendList;
+        res.json(responseObj);
     }, function(err){
         logger.error(JSON.stringify(err));
         responseObj = serviceUtil.generateObjectError(responseObj,err);

@@ -29,5 +29,17 @@ accountFriendDao.updateFriendStatus = function(accountId, friendId, status){
     return accountFriendDao.queryExecute(sql, params);
 }
 
+accountFriendDao.getFriendList = function(accountId, selectList, statusQuery){
+    var sql = SqlQueryConstant.ACCOUNT_ACTION_SQL.GET_FRIEND_LIST;
+    sql = sql.replace("#SelectList", selectList);
+
+    if(statusQuery){
+        sql = sql + statusQuery;
+    }
+
+    var params = [accountId];
+    return accountFriendDao.queryExecute(sql, params);
+}
+
 /*Export*/
 module.exports = accountFriendDao;

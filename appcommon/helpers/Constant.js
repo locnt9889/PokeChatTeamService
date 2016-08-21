@@ -78,6 +78,7 @@ var ACCOUNT_SEARCH_TYPE = {
 }
 
 var FRIEND_STATUS = {
+    "ALL" : "ALL",
     "FRIEND" : "FRIEND",
     "PEDDING" : "PEDDING",
     "REQUESTING" : "REQUESTING",
