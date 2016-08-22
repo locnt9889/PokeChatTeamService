@@ -83,14 +83,16 @@ accountDao.getShopNearWithDistance = function(myAccountQuery, latUser, longUser,
     sqlCount = sqlCount.replace("#genderQuery", genderQuery);
     sqlCount = sqlCount.replace("#myAccountQuery", myAccountQuery);
 
+    var executeDistance = "round(acos(sin(?*PI()/180)*sin(gpsLatitude*PI()/180)+cos(?*PI()/180)*cos(gpsLatitude*PI()/180)*cos((?-gpsLongitude)*PI()/180)) * 180/PI() * 60 * 1.1515 * 1.609344, 2)";
     if(distanceMax > 0){
-        sqlCount += " AND round(acos(sin(?*pi()/180)*sin(gpsLatitude*pi()/180) + cos(?*pi()/180)*cos(gpsLatitude*PI()/180)*cos(?*PI()/180-gpsLongitude*pi()/180)) * 6371000, 2) <= " + distanceMax;
+        //sqlCount += " AND round(acos(sin(?*pi()/180)*sin(gpsLatitude*pi()/180) + cos(?*pi()/180)*cos(gpsLatitude*PI()/180)*cos(?*PI()/180-gpsLongitude*pi()/180)) * 6371000, 2) <= " + distanceMax;
+        sqlCount += " AND " + executeDistance + " <= " + distanceMax;
     }
     var paramsCount = [Constant.TABLE_NAME_DB.ACCOUNTS.NAME, latUser, latUser, longUser];
 
     //build sql get data paging
-    var sql = "SELECT *, " +
-        "round(acos(sin(?*pi()/180)*sin(gpsLatitude*pi()/180) + cos(?*pi()/180)*cos(gpsLatitude*PI()/180)*cos(?*PI()/180-gpsLongitude*pi()/180)) * 6371000, 2) AS distanceM " +
+    var sql = "SELECT *, " + executeDistance +
+        " AS distanceM " +
         "FROM ?? WHERE #myAccountQuery AND #genderQuery"
     sql = sql.replace("#genderQuery", genderQuery);
     sql = sql.replace("#myAccountQuery", myAccountQuery);
