@@ -29,6 +29,6 @@ var DB_CONFIG_SERVER = {
 var DB_CONFIG = DB_CONFIG_SERVER;
 
 //for local dev
-//DB_CONFIG = DB_CONFIG_LOCAL;
+DB_CONFIG = DB_CONFIG_LOCAL;
 
 exports.pool = mysql.createPool(DB_CONFIG);

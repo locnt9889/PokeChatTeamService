@@ -38,6 +38,26 @@ var TABLE_NAME_DB = {
         NAME_FIELD_FRIEND_ID : "friendId",
         NAME_FIELD_FRIEND_STATUS : "friendStatus"
     },
+    CHAT_GROUP : {
+        NAME : "chat_group",
+        NAME_FIELD_ID : "id",
+        NAME_FIELD_UUID : "uuid",
+        NAME_FIELD_ACTIVE : "isActive",
+        NAME_FIELD_CREATED_USER_ID : "createdUserId"
+    },
+    CHAT_GROUP_MEMBER : {
+        NAME : "chat_group_member",
+        NAME_FIELD_ID : "id",
+        NAME_FIELD_UUID_GROUP : "groupUuid",
+        NAME_FIELD_ACCOUNTID : "accountId"
+    },
+    CHAT_GROUP_MESSAGE : {
+        NAME : "chat_group_message",
+        NAME_FIELD_ID : "id",
+        NAME_FIELD_UUID : "uuid",
+        NAME_FIELD_UUID_GROUP : "groupUuid",
+        NAME_FIELD_ACTIVE : "isActive"
+    }
 }
 
 var FOLDER_ROOT = "/home/develop/deploys/PokeChatTeamService";
