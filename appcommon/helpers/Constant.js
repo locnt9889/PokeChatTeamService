@@ -100,7 +100,7 @@ var ACCOUNT_SEARCH_TYPE = {
 var FRIEND_STATUS = {
     "ALL" : "ALL",
     "FRIEND" : "FRIEND",
-    "PEDDING" : "PEDDING",
+    "PENDING" : "PENDING",
     "REQUESTING" : "REQUESTING",
     "REMOVE" : "REMOVE"
 }
