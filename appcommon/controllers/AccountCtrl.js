@@ -695,7 +695,7 @@ router.post('/getFriendList', [accessTokenService.checkAccessToken, function(req
     var accountId = myAccount.accountId;
     var friendStatus = req.body.friendStatus ? req.body.friendStatus.toUpperCase() : Constant.FRIEND_STATUS.ALL;
 
-    if(friendStatus != Constant.FRIEND_STATUS.FRIEND && friendStatus != Constant.FRIEND_STATUS.REQUESTING
+    if(friendStatus != Constant.FRIEND_STATUS.FRIEND && friendStatus != Constant.FRIEND_STATUS.REQUESTING && friendStatus != Constant.FRIEND_STATUS.PEDDING
         && friendStatus != Constant.FRIEND_STATUS.REMOVE && friendStatus != Constant.FRIEND_STATUS.ALL){
         logger.error(CodeStatus.ACCOUNT_ACTION.FRIENDLY_ACTION.FRIEND_STATUS_INCORRECT.message);
         responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.ACCOUNT_ACTION.FRIENDLY_ACTION.FRIEND_STATUS_INCORRECT);

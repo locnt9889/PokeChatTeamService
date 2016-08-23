@@ -157,8 +157,26 @@ var ACCOUNT_ACTION = {
     }
 }
 
+var GROUP_ACTION = {
+    CREATE: {
+        UUID_EMPTY: {
+            code: 3001,
+            message: "Uuid group is require field."
+        },
+        FULLNAME_EMPTY: {
+            code: 3002,
+            message: "Fullname group is require field."
+        },
+        DO_NOT_PERMISSION: {
+            code: 3003,
+            message: "Don't have permission update. Only owner group have this permission."
+        }
+    }
+}
+
 module.exports = {
     COMMON : COMMON,
     SEND_MAIL : SEND_MAIL,
-    ACCOUNT_ACTION : ACCOUNT_ACTION
+    ACCOUNT_ACTION : ACCOUNT_ACTION,
+    GROUP_ACTION : GROUP_ACTION
 }
