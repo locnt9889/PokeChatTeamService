@@ -64,6 +64,9 @@ router.post('/create', [accessTokenService.checkAccessToken, function(req, res, 
                     responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
                     responseObj.results = chatGroup;
                     res.json(responseObj);
+
+                    //add new member
+                    groupChatMemberService.addMultiNewMember(chatGroup, listMemberId);
                 }, function(err){
                     logger.error(JSON.stringify(err));
                     responseObj = serviceUtil.generateObjectError(responseObj, err);
@@ -85,6 +88,9 @@ router.post('/create', [accessTokenService.checkAccessToken, function(req, res, 
                 chatGroup.id = dataCreate.insertId;
                 responseObj.results = chatGroup;
                 res.json(responseObj);
+
+                //add new member
+                groupChatMemberService.addMultiNewMember(chatGroup, listMemberId);
             }, function(err){
                 logger.error(JSON.stringify(err));
                 responseObj = serviceUtil.generateObjectError(responseObj, err);

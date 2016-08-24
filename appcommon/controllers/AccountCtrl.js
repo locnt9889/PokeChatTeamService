@@ -644,7 +644,7 @@ router.post('/friendly', [accessTokenService.checkAccessToken, accountService.ch
 
             accountFriendService.searchBase(objectSearchMyAccount).then(function(resultMyAccount){
                 if(friendStatus == Constant.FRIEND_STATUS.FRIEND){
-                    if(resultFriend || resultFriend.friendStatus == Constant.FRIEND_STATUS.FRIEND){
+                    if(resultMyAccount || resultMyAccount.friendStatus == Constant.FRIEND_STATUS.FRIEND){
                         logger.error(CodeStatus.ACCOUNT_ACTION.FRIENDLY_ACTION.FRIEND_ACCOUNT_NO_REQUEST.message);
                         responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.ACCOUNT_ACTION.FRIENDLY_ACTION.FRIEND_ACCOUNT_NO_REQUEST);
                         res.json(responseObj);
