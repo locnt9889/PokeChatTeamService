@@ -600,6 +600,7 @@ router.post('/friendly', [accessTokenService.checkAccessToken, accountService.ch
 
     var objectSearchFriend = {};
     objectSearchFriend.friendId = friendId;
+    objectSearchFriend.accountId = accountId;
 
     accountFriendService.searchBase(objectSearchFriend).then(function(resultFriend){
         if(friendStatus == Constant.FRIEND_STATUS.REQUESTING){
@@ -638,13 +639,14 @@ router.post('/friendly', [accessTokenService.checkAccessToken, accountService.ch
                 });
             }
         } else{
-            var objectSearchMyAccount = {};
-            objectSearchMyAccount.accountId = accountId;
-            objectSearchMyAccount.friendStatus = Constant.FRIEND_STATUS.PENDING;
+            //var objectSearchMyAccount = {};
+            //objectSearchMyAccount.accountId = accountId;
+            //objectSearchMyAccount.accountId = accountId;
+            //objectSearchMyAccount.friendStatus = Constant.FRIEND_STATUS.PENDING;
 
-            accountFriendService.searchBase(objectSearchMyAccount).then(function(resultMyAccount){
+            //accountFriendService.searchBase(objectSearchMyAccount).then(function(resultMyAccount){
                 if(friendStatus == Constant.FRIEND_STATUS.FRIEND){
-                    if(resultMyAccount || resultMyAccount.friendStatus == Constant.FRIEND_STATUS.FRIEND){
+                    if(!resultFriend || resultFriend.length == 0 || resultFriend[0].friendStatus != Constant.FRIEND_STATUS.PENDING){
                         logger.error(CodeStatus.ACCOUNT_ACTION.FRIENDLY_ACTION.FRIEND_ACCOUNT_NO_REQUEST.message);
                         responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.ACCOUNT_ACTION.FRIENDLY_ACTION.FRIEND_ACCOUNT_NO_REQUEST);
                         res.json(responseObj);
@@ -673,11 +675,11 @@ router.post('/friendly', [accessTokenService.checkAccessToken, accountService.ch
                         res.send(responseObj);
                     });
                 }
-            }, function(err){
-                logger.error(JSON.stringify(err));
-                responseObj = serviceUtil.generateObjectError(responseObj,err);
-                res.send(responseObj);
-            });
+            //}, function(err){
+            //    logger.error(JSON.stringify(err));
+            //    responseObj = serviceUtil.generateObjectError(responseObj,err);
+            //    res.send(responseObj);
+            //});
         }
     }, function(err){
         logger.error(JSON.stringify(err));
