@@ -143,7 +143,6 @@ accountService.searchByString = function(myAccountId, gender, searchType, search
  */
 accountService.searchNearAccount = function(myAccountId, gender, gpsLongitude, gpsLatitude, distanceMax, perPage, pageNum){
     var genderQuery = "";
-    var myAccountQuery = "accountId != " + myAccountId;
 
     if(gender != Constant.ACCOUNT_GENDER.MALE && gender != Constant.ACCOUNT_GENDER.FEMALE){
         genderQuery = "1";
@@ -151,7 +150,7 @@ accountService.searchNearAccount = function(myAccountId, gender, gpsLongitude, g
         genderQuery = Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_GENDER + "=" + gender;
     }
 
-    return accountDao.getShopNearWithDistance(myAccountQuery, gpsLatitude, gpsLongitude, distanceMax, genderQuery, perPage, pageNum);
+    return accountDao.getShopNearWithDistance(myAccountId, gpsLatitude, gpsLongitude, distanceMax, genderQuery, perPage, pageNum);
 
 };
 /**

@@ -72,14 +72,14 @@ accountDao.searchAccountByString = function(myAccountQuery, genderQuery, likeQue
  * round(acos(sin($lat1*pi()/180)*sin($lat2*pi()/180) + cos($lat1*pi()/180)*cos($lat2*PI()/180)*cos($long2*PI()/180-$long1*pi()/180)) * 6371000, 2)
  */
 
-accountDao.getShopNearWithDistance = function(myAccountQuery, latUser, longUser, distanceMax, genderQuery, perPage, pageNum){
+accountDao.getShopNearWithDistance = function(accountId, latUser, longUser, distanceMax, genderQuery, perPage, pageNum){
     var def = Q.defer();
 
     var start = perPage * (pageNum-1);
 
     //build sql count
     var sqlCount = "SELECT COUNT(*) AS TOTAL_ITEMS" +
-        " FROM ?? WHERE #myAccountQuery AND #genderQuery";
+        " FROM ?? WHERE accountId != ? AND #genderQuery";
     sqlCount = sqlCount.replace("#genderQuery", genderQuery);
     sqlCount = sqlCount.replace("#myAccountQuery", myAccountQuery);
 
@@ -88,19 +88,18 @@ accountDao.getShopNearWithDistance = function(myAccountQuery, latUser, longUser,
         //sqlCount += " AND round(acos(sin(?*pi()/180)*sin(gpsLatitude*pi()/180) + cos(?*pi()/180)*cos(gpsLatitude*PI()/180)*cos(?*PI()/180-gpsLongitude*pi()/180)) * 6371000, 2) <= " + distanceMax;
         sqlCount += " AND " + executeDistance + " <= " + distanceMax;
     }
-    var paramsCount = [Constant.TABLE_NAME_DB.ACCOUNTS.NAME, latUser, latUser, longUser];
+    var paramsCount = [Constant.TABLE_NAME_DB.ACCOUNTS.NAME, accountId, latUser, latUser, longUser];
 
     //build sql get data paging
-    var sql = "SELECT *, " + executeDistance +
+    var sql = "SELECT *, af.friendStatus, " + executeDistance +
         " AS distanceM " +
-        "FROM ?? WHERE #myAccountQuery AND #genderQuery"
+        "FROM accounts ac LEFT JOIN account_friend af ON ac.accountId = af.friendId WHERE ac.accountId != ? AND af.accountId = ? AND #myAccountQuery AND #genderQuery"
     sql = sql.replace("#genderQuery", genderQuery);
-    sql = sql.replace("#myAccountQuery", myAccountQuery);
     if(distanceMax > 0){
         sql += " HAVING distanceM <= " + distanceMax;
     }
     sql += " ORDER BY distanceM DESC LIMIT ?, ?";
-    var params = [latUser, latUser, longUser, Constant.TABLE_NAME_DB.ACCOUNTS.NAME, start, perPage];
+    var params = [latUser, latUser, longUser, accountId, accountId, start, perPage];
 
     accountDao.queryExecute(sqlCount, paramsCount).then(function(dataCount){
         var responsePagingDto = new ResponsePagingDto();
