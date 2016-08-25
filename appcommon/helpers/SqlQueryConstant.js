@@ -21,8 +21,14 @@ var ACCOUNT_ACTION_SQL = {
     GET_FRIEND_LIST : "SELECT #SelectList,af.friendStatus  FROM accounts ac INNER JOIN account_friend af ON ac.accountId = af.friendId WHERE ac.isActive = 1 AND af.accountId = ?"
 }
 
+var GROUP_ACTION_SQL = {
+    GET_MEMBER_OF_GROUP : "SELECT ac.* FROM accounts ac INNER JOIN chat_group_member cgm ON ac.accountId = cgm.accountId WHERE cgm.groupUuid = ?",
+    GET_GROUP_BY_MEMBER : "SELECT cg.* FROM chat_group cg INNER JOIN chat_group_member cgm ON cg.uuid = cgm.groupUuid WHERE cgm.accountId = ? AND cg.isActive = 1"
+}
+
 /*Exports */
 module.exports = {
     GENERIC_SQL : GENERIC_SQL,
-    ACCOUNT_ACTION_SQL : ACCOUNT_ACTION_SQL
+    ACCOUNT_ACTION_SQL : ACCOUNT_ACTION_SQL,
+    GROUP_ACTION_SQL : GROUP_ACTION_SQL
 }

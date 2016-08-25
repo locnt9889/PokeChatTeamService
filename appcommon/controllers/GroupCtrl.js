@@ -21,6 +21,7 @@ var groupChatService = require("../services/GroupChatService");
 var accessTokenService = require("../services/AccessTokenService");
 var groupChatMemberService = require("../services/GroupChatMemberService");
 var groupChatMessageService = require("../services/GroupChatMessageService");
+var accountService = require("../services/AccountService");
 
 var uploadFileHelper = require("../helpers/UploadFileHelper");
 var Q = require("q");
@@ -129,6 +130,10 @@ router.post('/addMember', [accessTokenService.checkAccessToken, function(req, re
         if(resultSearch && resultSearch.length > 0){
             var chatGroup = resultSearch[0];
             groupChatMemberService.addMultiNewMember(chatGroup, listMemberId);
+
+            responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
+            responseObj.results = {};
+            res.json(responseObj);
         }else{
             logger.error(CodeStatus.GROUP_ACTION.CREATE.UUID_GROUP_INVALID.message);
             responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.GROUP_ACTION.CREATE.UUID_GROUP_INVALID);
@@ -141,6 +146,82 @@ router.post('/addMember', [accessTokenService.checkAccessToken, function(req, re
         res.json(responseObj);
     });
 
+}]);
+
+/* POST create */
+router.post('/getGroup', [accessTokenService.checkAccessToken, function(req, res, next) {
+    var responseObj = new ResponseServerDto();
+
+    var accessTokenObj = req.accessTokenObj;
+    var myAccount = accessTokenObj.account;
+    var accountId = myAccount.accountId;
+
+    var groupUuid = req.body.groupUuid ? req.body.groupUuid : "";
+    if(groupUuid != "") {
+        var objectSearch = {};
+        objectSearch[Constant.TABLE_NAME_DB.CHAT_GROUP.NAME_FIELD_UUID] = groupUuid;
+        objectSearch[Constant.TABLE_NAME_DB.CHAT_GROUP.NAME_FIELD_ACTIVE] = true;
+
+        groupChatService.searchBase(objectSearch).then(function (resultSearch) {
+            if (resultSearch.length == 0) {
+                logger.error(CodeStatus.GROUP_ACTION.CREATE.UUID_GROUP_INVALID.message);
+                responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.GROUP_ACTION.CREATE.UUID_GROUP_INVALID);
+                res.json(responseObj);
+                return;
+            } else {
+                var groupChat = resultSearch[0];
+                groupChatMemberService.getListMemberOfGroup(groupChat.uuid).then(function (dataMember) {
+                    var objectOwnerSearch = {};
+                    objectOwnerSearch[Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_ID] = groupChat.createdUserId;
+                    objectOwnerSearch[Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_ACTIVE] = true;
+                    accountService.searchBase(objectOwnerSearch).then(function (resultOwnerSearch) {
+                        dataMember.push.apply(dataMember, resultOwnerSearch);
+                        if(dataMember && dataMember.length > 0){
+                            for(var i = 0; i < dataMember.length; i++){
+                                dataMember[i].password = "******";
+                            }
+                        }
+                        groupChat.members = dataMember;
+                        responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
+                        responseObj.results = groupChat;
+                        res.json(responseObj);
+                    }, function (error) {
+                        logger.error(JSON.stringify(error));
+                        responseObj = serviceUtil.generateObjectError(responseObj, error);
+                        res.json(responseObj);
+                    });
+                }, function (err) {
+                    logger.error(JSON.stringify(error));
+                    responseObj = serviceUtil.generateObjectError(responseObj, error);
+                    res.json(responseObj);
+                });
+            }
+        }, function (error) {
+            logger.error(JSON.stringify(error));
+            responseObj = serviceUtil.generateObjectError(responseObj, error);
+            res.json(responseObj);
+        });
+    }else{
+        groupChatMemberService.getListGroupByMember(accountId).then(function (dataGroup) {
+            var objectOwnerSearch = {};
+            objectOwnerSearch[Constant.TABLE_NAME_DB.CHAT_GROUP.NAME_FIELD_CREATED_USER_ID] = accountId;
+            objectOwnerSearch[Constant.TABLE_NAME_DB.CHAT_GROUP.NAME_FIELD_ACTIVE] = true;
+            groupChatService.searchBase(objectOwnerSearch).then(function (resultOwnerSearch) {
+                dataGroup.push.apply(dataGroup, resultOwnerSearch);
+                responseObj.statusErrorCode = CodeStatus.COMMON.SUCCESS.code;
+                responseObj.results = dataGroup;
+                res.json(responseObj);
+            }, function (error) {
+                logger.error(JSON.stringify(error));
+                responseObj = serviceUtil.generateObjectError(responseObj, error);
+                res.json(responseObj);
+            });
+        }, function (err) {
+            logger.error(JSON.stringify(error));
+            responseObj = serviceUtil.generateObjectError(responseObj, error);
+            res.json(responseObj);
+        });
+    }
 }]);
 
 module.exports = router;

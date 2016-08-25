@@ -30,5 +30,37 @@ chatGroupMemberService.addMultiNewMember = function(chatGroup, memberListId){
     }
 }
 
+chatGroupMemberService.getListGroup = function(accountId){
+    var deferred = Q.defer();
+
+    var objectSearch = {};
+    objectSearch[Constant.TABLE_NAME_DB.CHAT_GROUP.NAME_FIELD_ACTIVE] = true;
+    objectSearch[Constant.TABLE_NAME_DB.CHAT_GROUP.NAME_FIELD_CREATED_USER_ID] = accountId;
+
+    chatGroupMemberService.getListMemberOfGroup(uuid).then(function(data){
+        if(data && data.length > 0){
+            for(var i = 0; i < data.length; i++){
+                data[i].password = "******";
+            }
+        }
+
+        deferred.resolve(data);
+    }, function(err){
+        logger.error(JSON.stringify(err));
+        deferred.reject(err);
+        return;
+    })
+
+    return deferred.promise;
+}
+
+chatGroupMemberService.getListMemberOfGroup = function(uuid){
+    return chatGroupMemberDao.getListMemberOfGroup(uuid);
+}
+
+chatGroupMemberService.getListGroupByMember = function(accountId){
+    return chatGroupMemberDao.getListGroupByMember(accountId);
+}
+
 /*Exports*/
 module.exports = chatGroupMemberService;
