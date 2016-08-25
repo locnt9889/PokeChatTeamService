@@ -92,7 +92,7 @@ accountDao.getShopNearWithDistance = function(accountId, latUser, longUser, dist
     //build sql get data paging
     var sql = "SELECT *, af.friendStatus, " + executeDistance +
         " AS distanceM " +
-        "FROM accounts ac LEFT JOIN account_friend af ON ac.accountId = af.friendId WHERE ac.accountId != ? AND af.accountId = ? AND #myAccountQuery AND #genderQuery"
+        "FROM accounts ac LEFT JOIN account_friend af ON ac.accountId = af.friendId WHERE ac.accountId != ? AND af.accountId = ? AND #genderQuery"
     sql = sql.replace("#genderQuery", genderQuery);
     if(distanceMax > 0){
         sql += " HAVING distanceM <= " + distanceMax;
