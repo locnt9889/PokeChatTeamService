@@ -81,7 +81,6 @@ accountDao.getShopNearWithDistance = function(accountId, latUser, longUser, dist
     var sqlCount = "SELECT COUNT(*) AS TOTAL_ITEMS" +
         " FROM ?? WHERE accountId != ? AND #genderQuery";
     sqlCount = sqlCount.replace("#genderQuery", genderQuery);
-    sqlCount = sqlCount.replace("#myAccountQuery", myAccountQuery);
 
     var executeDistance = "round(acos(sin(?*PI()/180)*sin(gpsLatitude*PI()/180)+cos(?*PI()/180)*cos(gpsLatitude*PI()/180)*cos((?-gpsLongitude)*PI()/180)) * 180/PI() * 60 * 1.1515 * 1.609344, 2)";
     if(distanceMax > 0){
