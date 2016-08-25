@@ -21,7 +21,7 @@ var ACCOUNT_ACTION_SQL = {
     GET_FRIEND_LIST : "SELECT #SelectList,af.friendStatus  FROM accounts ac INNER JOIN account_friend af ON ac.accountId = af.friendId WHERE ac.isActive = 1 AND af.accountId = ?"
 }
 
-/*Exports*/
+/*Exports */
 module.exports = {
     GENERIC_SQL : GENERIC_SQL,
     ACCOUNT_ACTION_SQL : ACCOUNT_ACTION_SQL
