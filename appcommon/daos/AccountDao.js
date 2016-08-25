@@ -12,7 +12,7 @@ var accountDao = new MysqlHelper(Constant.TABLE_NAME_DB.ACCOUNTS);
 var ResponsePagingDto = require("../modelsDto/ResponsePagingDto");
 var logger = require("../helpers/LoggerService");
 
-accountDao.searchAccountByString = function(myAccountQuery, genderQuery, likeQuery, perPage, pageNum){
+accountDao.searchAccountByString = function(accountId, genderQuery, likeQuery, perPage, pageNum){
     var def = Q.defer();
 
     var start = perPage * (pageNum-1);
@@ -20,9 +20,8 @@ accountDao.searchAccountByString = function(myAccountQuery, genderQuery, likeQue
     var sqlCount = SqlQueryConstant.ACCOUNT_ACTION_SQL.SEARCH_BY_STRING_COUNT;
     sqlCount = sqlCount.replace("#GENDER", genderQuery);
     sqlCount = sqlCount.replace("#LIKE", likeQuery);
-    sqlCount = sqlCount.replace("#MYACCOUNT", myAccountQuery);
 
-    var paramCount = [Constant.TABLE_NAME_DB.ACCOUNTS.NAME];
+    var paramCount = [accountId];
 
     accountDao.queryExecute(sqlCount, paramCount).then(function(dataCount){
         var responsePagingDto = new ResponsePagingDto();
@@ -40,9 +39,8 @@ accountDao.searchAccountByString = function(myAccountQuery, genderQuery, likeQue
         var sql = SqlQueryConstant.ACCOUNT_ACTION_SQL.SEARCH_BY_STRING_PAGING;
         sql = sql.replace("#GENDER", genderQuery);
         sql = sql.replace("#LIKE", likeQuery);
-        sql = sql.replace("#MYACCOUNT", myAccountQuery);
 
-        var params = [Constant.TABLE_NAME_DB.ACCOUNTS.NAME, start, perPage];
+        var params = [accountId, accountId, start, perPage];
         accountDao.queryExecute(sql, params).then(function(data){
             responsePagingDto.items = data;
             def.resolve(responsePagingDto);
@@ -78,8 +76,8 @@ accountDao.getShopNearWithDistance = function(accountId, latUser, longUser, dist
     var start = perPage * (pageNum-1);
 
     //build sql count
-    var sqlCount = "SELECT COUNT(*) AS TOTAL_ITEMS" +
-        " FROM ?? WHERE accountId != ? AND #genderQuery";
+    var sqlCount = "SELECT COUNT(ac.*) AS TOTAL_ITEMS" +
+        " FROM accounts ac WHERE ac.accountId != ? AND #genderQuery";
     sqlCount = sqlCount.replace("#genderQuery", genderQuery);
 
     var executeDistance = "round(acos(sin(?*PI()/180)*sin(gpsLatitude*PI()/180)+cos(?*PI()/180)*cos(gpsLatitude*PI()/180)*cos((?-gpsLongitude)*PI()/180)) * 180/PI() * 60 * 1.1515 * 1.609344, 2)";
@@ -87,7 +85,7 @@ accountDao.getShopNearWithDistance = function(accountId, latUser, longUser, dist
         //sqlCount += " AND round(acos(sin(?*pi()/180)*sin(gpsLatitude*pi()/180) + cos(?*pi()/180)*cos(gpsLatitude*PI()/180)*cos(?*PI()/180-gpsLongitude*pi()/180)) * 6371000, 2) <= " + distanceMax;
         sqlCount += " AND " + executeDistance + " <= " + distanceMax;
     }
-    var paramsCount = [Constant.TABLE_NAME_DB.ACCOUNTS.NAME, accountId, latUser, latUser, longUser];
+    var paramsCount = [accountId, latUser, latUser, longUser];
 
     //build sql get data paging
     var sql = "SELECT ac.*, af.friendStatus, " + executeDistance +

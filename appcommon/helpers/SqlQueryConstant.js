@@ -14,8 +14,8 @@ var GENERIC_SQL = {
 }
 
 var ACCOUNT_ACTION_SQL = {
-    SEARCH_BY_STRING_COUNT : "SELECT COUNT(*) AS TOTAL_ITEMS FROM ?? WHERE #MYACCOUNT AND #GENDER AND #LIKE",
-    SEARCH_BY_STRING_PAGING : "SELECT * FROM ?? WHERE #MYACCOUNT AND #GENDER AND #LIKE LIMIT ?, ?",
+    SEARCH_BY_STRING_COUNT : "SELECT COUNT(ac.*) AS TOTAL_ITEMS FROM accounts ac WHERE ac.accountId != ? AND #GENDER AND #LIKE",
+    SEARCH_BY_STRING_PAGING : "SELECT ac.*, af.friendStatus FROM accounts ac LEFT JOIN account_friend af ON ac.accountId = af.friendId WHERE ac.accountId != ? AND af.accountId = ? AND #GENDER AND #LIKE LIMIT ?, ?",
     REMOVE_PAIR_ACCOUNT_NO_FRIEND : "DELETE FROM ?? WHERE (?? = ? AND ?? = ?) OR (?? = ? AND ?? = ?)",
     UPDATE_FRIEND : "UPDATE ?? SET ?? = ? WHERE (?? = ? AND ?? = ?) OR (?? = ? AND ?? = ?)",
     GET_FRIEND_LIST : "SELECT #SelectList,af.friendStatus  FROM accounts ac INNER JOIN account_friend af ON ac.accountId = af.friendId WHERE ac.isActive = 1 AND af.accountId = ?"
