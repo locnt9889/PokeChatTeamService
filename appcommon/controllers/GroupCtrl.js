@@ -105,4 +105,42 @@ router.post('/create', [accessTokenService.checkAccessToken, function(req, res, 
 
 }]);
 
+/* POST create */
+router.post('/addMember', [accessTokenService.checkAccessToken, function(req, res, next) {
+    var responseObj = new ResponseServerDto();
+
+    var accessTokenObj = req.accessTokenObj;
+
+    var groupUuid = req.body.groupUuid ? req.body.groupUuid : "";
+    var listMemberId = req.body.listMemberId ? req.body.listMemberId : "";
+
+    if(checkValidateUtil.isEmptyFeild(groupUuid)){
+        logger.error(CodeStatus.GROUP_ACTION.CREATE.UUID_EMPTY.message);
+        responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.GROUP_ACTION.CREATE.UUID_EMPTY);
+        res.json(responseObj);
+        return;
+    }
+
+    var objectSearch = {};
+    objectSearch[Constant.TABLE_NAME_DB.CHAT_GROUP.NAME_FIELD_UUID] = groupUuid;
+    objectSearch[Constant.TABLE_NAME_DB.CHAT_GROUP.NAME_FIELD_ACTIVE] = true;
+
+    groupChatService.searchBase(objectSearch).then(function(resultSearch){
+        if(resultSearch && resultSearch.length > 0){
+            var chatGroup = resultSearch[0];
+            groupChatMemberService.addMultiNewMember(chatGroup, listMemberId);
+        }else{
+            logger.error(CodeStatus.GROUP_ACTION.CREATE.UUID_GROUP_INVALID.message);
+            responseObj = serviceUtil.generateObjectError(responseObj, CodeStatus.GROUP_ACTION.CREATE.UUID_GROUP_INVALID);
+            res.json(responseObj);
+            return;
+        }
+    }, function(error){
+        logger.error(JSON.stringify(error));
+        responseObj = serviceUtil.generateObjectError(responseObj, error);
+        res.json(responseObj);
+    });
+
+}]);
+
 module.exports = router;

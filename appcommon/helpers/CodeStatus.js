@@ -170,6 +170,10 @@ var GROUP_ACTION = {
         DO_NOT_PERMISSION: {
             code: 3003,
             message: "Don't have permission update. Only owner group have this permission."
+        },
+        UUID_GROUP_INVALID: {
+            code: 3004,
+            message: "uuid group is invalid."
         }
     }
 }

@@ -2,5 +2,6 @@
   {"name":"/rest/person", "path":"./appcommon/controllers/PersonCtrl"},
   {"name":"/rest/mail", "path":"./appcommon/controllers/SendmailTestCtrl"},
   {"name":"/rest/utils", "path":"./appcommon/controllers/UtilsCtrl"},
-  {"name":"/rest/account", "path":"./appcommon/controllers/AccountCtrl"}
+  {"name":"/rest/account", "path":"./appcommon/controllers/AccountCtrl"},
+  {"name":"/rest/group", "path":"./appcommon/controllers/GroupCtrl"}
 ]

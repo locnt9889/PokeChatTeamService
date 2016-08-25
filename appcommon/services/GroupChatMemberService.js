@@ -20,11 +20,11 @@ chatGroupMemberService.addMultiNewMember = function(chatGroup, memberListId){
         var memberIds = memberListId.split(",");
         for(var i = 0; i < memberIds.length; i++){
             var id = parseInt(memberIds[i]);
-            if(id > 0){
+            if(id > 0 && id != chatGroup.createdUserId){
                 var chatGroupMember = new ChatGroupMember();
                 chatGroupMember.accountId = id;
                 chatGroupMember.groupUuid = chatGroup.uuid;
-                chatGroupMenberService.create(chatGroupMember);
+                chatGroupMemberService.create(chatGroupMember);
             }
         }
     }
