@@ -76,7 +76,7 @@ accountDao.getShopNearWithDistance = function(accountId, latUser, longUser, dist
     var start = perPage * (pageNum-1);
 
     //build sql count
-    var sqlCount = "SELECT COUNT(ac.*) AS TOTAL_ITEMS" +
+    var sqlCount = "SELECT COUNT(ac.accountId) AS TOTAL_ITEMS" +
         " FROM accounts ac WHERE ac.accountId != ? AND #genderQuery";
     sqlCount = sqlCount.replace("#genderQuery", genderQuery);
 
