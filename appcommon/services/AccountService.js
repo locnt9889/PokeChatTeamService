@@ -114,7 +114,7 @@ accountService.searchByString = function(myAccountId, gender, searchType, search
     if(gender != Constant.ACCOUNT_GENDER.MALE && gender != Constant.ACCOUNT_GENDER.FEMALE){
         genderQuery = "1";
     }else{
-        genderQuery = "ac." + Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_GENDER + "=" + gender;
+        genderQuery = "ac." + Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_GENDER + "='" + gender + "'";
     }
 
     if(searchType == Constant.ACCOUNT_SEARCH_TYPE.EMAIL){
@@ -146,7 +146,7 @@ accountService.searchNearAccount = function(myAccountId, gender, gpsLongitude, g
     if(gender != Constant.ACCOUNT_GENDER.MALE && gender != Constant.ACCOUNT_GENDER.FEMALE){
         genderQuery = "1";
     }else{
-        genderQuery = "ac." + Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_GENDER + "=" + gender;
+        genderQuery = "ac." + Constant.TABLE_NAME_DB.ACCOUNTS.NAME_FIELD_GENDER + "='" + gender+"'";
     }
 
     return accountDao.getShopNearWithDistance(myAccountId, gpsLatitude, gpsLongitude, distanceMax, genderQuery, perPage, pageNum);
