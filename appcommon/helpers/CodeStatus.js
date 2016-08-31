@@ -170,10 +170,20 @@ var GROUP_ACTION = {
         DO_NOT_PERMISSION: {
             code: 3003,
             message: "Don't have permission update. Only owner group have this permission."
-        },
+        }
+    },
+    SEARCH : {
         UUID_GROUP_INVALID: {
-            code: 3004,
+            code: 3101,
             message: "uuid group is invalid."
+        },
+        GROUP_MEMBER_INVALID: {
+            code: 3102,
+            message: "Member is not in group."
+        },
+        GPS_INFO_UPDATE_EMPTY : {
+            code: 3103,
+            message: "gps info is require field."
         }
     }
 }

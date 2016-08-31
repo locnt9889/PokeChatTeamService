@@ -49,7 +49,8 @@ var TABLE_NAME_DB = {
         NAME : "chat_group_member",
         NAME_FIELD_ID : "id",
         NAME_FIELD_UUID_GROUP : "groupUuid",
-        NAME_FIELD_ACCOUNTID : "accountId"
+        NAME_FIELD_ACCOUNTID : "accountId",
+        NAME_FIELD_SHOW_GPS : "isShowGps"
     },
     CHAT_GROUP_MESSAGE : {
         NAME : "chat_group_message",
