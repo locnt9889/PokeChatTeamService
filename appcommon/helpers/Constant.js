@@ -55,7 +55,7 @@ var TABLE_NAME_DB = {
     CHAT_GROUP_MESSAGE : {
         NAME : "chat_group_message",
         NAME_FIELD_ID : "id",
-        NAME_FIELD_UUID : "uuid",
+        NAME_FIELD_UUID : "messageUuid",
         NAME_FIELD_UUID_GROUP : "groupUuid",
         NAME_FIELD_ACTIVE : "isActive"
     }

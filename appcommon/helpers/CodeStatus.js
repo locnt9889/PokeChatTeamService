@@ -188,9 +188,21 @@ var GROUP_ACTION = {
     }
 }
 
+var CHAT_ACTION = {
+    MESSAGE_UUID_INVALID: {
+        code: 4001,
+        message: "Uuid message is invalid."
+    },
+    IS_NOT_OWNER_MESSAGE: {
+        code: 4002,
+        message: "You are not owner of message, so can not delete!"
+    }
+}
+
 module.exports = {
     COMMON : COMMON,
     SEND_MAIL : SEND_MAIL,
     ACCOUNT_ACTION : ACCOUNT_ACTION,
-    GROUP_ACTION : GROUP_ACTION
+    GROUP_ACTION : GROUP_ACTION,
+    CHAT_ACTION : CHAT_ACTION
 }

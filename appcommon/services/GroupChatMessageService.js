@@ -11,5 +11,9 @@ var GenericService = require("./GenericService");
 var chatGroupMessageDao = require("../daos/ChatGroupMessageDao");
 var chatGroupMessageService = new GenericService(chatGroupMessageDao);
 
+chatGroupMessageService.getMessageByGroup = function(groupUuid, added, perPage, pageNum){
+    return chatGroupMessageDao.getMessageByGroup(groupUuid, added, perPage, pageNum);
+}
+
 /*Exports*/
 module.exports = chatGroupMessageService;

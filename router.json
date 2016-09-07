@@ -3,5 +3,6 @@
   {"name":"/rest/mail", "path":"./appcommon/controllers/SendmailTestCtrl"},
   {"name":"/rest/utils", "path":"./appcommon/controllers/UtilsCtrl"},
   {"name":"/rest/account", "path":"./appcommon/controllers/AccountCtrl"},
-  {"name":"/rest/group", "path":"./appcommon/controllers/GroupCtrl"}
+  {"name":"/rest/group", "path":"./appcommon/controllers/GroupCtrl"},
+  {"name":"/rest/chat", "path":"./appcommon/controllers/ChatCtrl"}
 ]

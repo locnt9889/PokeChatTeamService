@@ -26,9 +26,15 @@ var GROUP_ACTION_SQL = {
     GET_GROUP_BY_MEMBER : "SELECT cg.* FROM chat_group cg INNER JOIN chat_group_member cgm ON cg.uuid = cgm.groupUuid WHERE cgm.accountId = ? AND cg.isActive = 1"
 }
 
+var CHAT_ACTION_SQL = {
+    GET_MESSAGE_BY_GROUP_COUNT : "SELECT COUNT(id) AS TOTAL_ITEMS FROM chat_group_message WHERE groupUuid = ? AND added < ?",
+    GET_MESSAGE_BY_GROUP_PAGING : "SELECT cgm.*, ac.fullname FROM chat_group_message cgm LEFT JOIN accounts ac ON ac.accountId = cgm.accountId WHERE cgm.groupUuid = ? AND cgm.added < ? ORDER BY cgm.added desc LIMIT ?, ?",
+}
+
 /*Exports */
 module.exports = {
     GENERIC_SQL : GENERIC_SQL,
     ACCOUNT_ACTION_SQL : ACCOUNT_ACTION_SQL,
-    GROUP_ACTION_SQL : GROUP_ACTION_SQL
+    GROUP_ACTION_SQL : GROUP_ACTION_SQL,
+    CHAT_ACTION_SQL : CHAT_ACTION_SQL
 }

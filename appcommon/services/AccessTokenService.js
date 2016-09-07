@@ -66,5 +66,45 @@ accessTokenService.checkAccessToken = function(req, res, next){
     });
 };
 
+accessTokenService.checkAccessTokenForChat = function(accessToken){
+    var deferred = Q.defer();
+
+    if(checkValidateUtil.isEmptyFeild(accessToken)){
+        deferred.reject(CodeStatus.COMMON.ACCESS_TOKEN_INVALID);
+        return;
+    }
+
+    var objSearch = {};
+    objSearch[Constant.TABLE_NAME_DB.ACCOUNT_DEVICES.NAME_FIELD_ACCESS_TOKEN] = accessToken;
+    objSearch[Constant.TABLE_NAME_DB.ACCOUNT_DEVICES.NAME_FIELD_ACTIVE] = true;
+
+    accessTokenService.searchBase(objSearch).then(function(dataSearch){
+        if(dataSearch && dataSearch.length > 0){
+            var accessTokenObj = dataSearch[0];
+            accountService.detail(accessTokenObj.accountId).then(function(data){
+                if(data && data.length > 0){
+                    var account = data[0];
+                    delete account.password;
+
+                    deferred.resolve(account);
+
+                }else{
+                    deferred.reject(CodeStatus.COMMON.ACCESS_TOKEN_INVALID);
+                }
+            }, function(err){
+                logger.error(JSON.stringify(err));
+                deferred.reject(err);
+            });
+        }else{
+            deferred.reject(CodeStatus.COMMON.ACCESS_TOKEN_INVALID);
+        }
+    }, function(err){
+        logger.error(JSON.stringify(err));
+        deferred.reject(err);
+    });
+
+    return deferred.promise;
+};
+
 /*Exports*/
 module.exports = accessTokenService;
