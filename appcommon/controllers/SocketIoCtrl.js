@@ -29,6 +29,7 @@ SocketIoCtrl.prototype.initConfigSocket = function(){
             accessTokenService.checkAccessTokenForChat(accessToken).then(function(result){
                 socket.account = result;
                 socket.chatGroups = data.groups ? data.groups : [];
+                socket.id = result.accountId;
 
                 //New user joins room
                 for(var i = 0; i < socket.chatGroups.length; i++){

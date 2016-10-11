@@ -62,7 +62,7 @@ var TABLE_NAME_DB = {
 }
 
 var FOLDER_ROOT = "/home/develop/deploys/PokeChatTeamService";
-//FOLDER_ROOT = "/Users/ChungTV/WebstormProjects/Nodejs-MySql/PokeChatTeamService";
+FOLDER_ROOT = "/Users/ChungTV/WebstormProjects/Nodejs-MySql/PokeChatTeamService";
 
 var UPLOAD_FILE_CONFIG = {
     MAX_SIZE_IMAGE : {
