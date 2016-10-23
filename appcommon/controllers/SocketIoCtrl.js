@@ -21,6 +21,25 @@ SocketIoCtrl.prototype.initConfigSocket = function(){
     io.on('connection', function(socket) {
         console.log("user connect success : " + socket.id);
 
+        socket.on('NewMessageTest', function(data) {
+            console.log("NewMessageTest : " + JSON.stringify(data));
+            var chatGroupMessage = new ChatGroupMessage();
+            chatGroupMessage.accountId = socket.account.accountId;
+            chatGroupMessage.groupUuid = data.groupUuid;
+            chatGroupMessage.messageUuid = data.messageUuid;
+            chatGroupMessage.messageType = data.messageType;
+            chatGroupMessage.messageValue = data.messageValue;
+
+            //Save it to database
+            groupChatMessageService.create(chatGroupMessage).then(function(result){
+                //Send message to those connected in the room
+                chatGroupMessage.id = result.insertId;
+                chatGroupMessage.username = socket.account.fullname;
+                io.in(chatGroupMessage.groupUuid).emit('MessageCreated', chatGroupMessage);
+                //io.emit('MessageCreated', chatGroupMessage);
+            });
+        });
+
         //Listens for new user
         socket.on('InitChatroom', function(data) {
             console.log("join to room")
