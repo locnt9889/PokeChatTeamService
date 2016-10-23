@@ -39,6 +39,7 @@ SocketIoCtrl.prototype.initConfigSocket = function(){
                 //config
                 //Listens for a new chat message
                 socket.on('NewMessage', function(data) {
+                    console.log("NewMessage : " + JSON.stringify(data));
                     var chatGroupMessage = new ChatGroupMessage();
                     chatGroupMessage.accountId = socket.account.accountId;
                     chatGroupMessage.groupUuid = data.groupUuid;
@@ -52,6 +53,7 @@ SocketIoCtrl.prototype.initConfigSocket = function(){
                         chatGroupMessage.id = result.insertId;
                         chatGroupMessage.username = socket.account.fullname;
                         io.in(chatGroupMessage.groupUuid).emit('MessageCreated', chatGroupMessage);
+                        //io.emit('MessageCreated', chatGroupMessage);
                     });
                 });
 
