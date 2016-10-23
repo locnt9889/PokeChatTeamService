@@ -35,8 +35,8 @@ SocketIoCtrl.prototype.initConfigSocket = function(){
                 //Send message to those connected in the room
                 chatGroupMessage.id = result.insertId;
                 chatGroupMessage.username = socket.account.fullname;
-                io.in(chatGroupMessage.groupUuid).emit('MessageCreated', chatGroupMessage);
-                //io.emit('MessageCreated', chatGroupMessage);
+                //io.in(chatGroupMessage.groupUuid).emit('MessageCreated', chatGroupMessage);
+                socket.emit('MessageCreated', chatGroupMessage);
             });
         });
 
