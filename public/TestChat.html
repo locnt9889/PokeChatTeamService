@@ -23,8 +23,8 @@
         });
 
         socket.on('MessageCreated', function (data) {
-            //alert("new : " + JSON.stringify(data));
-            $('#messages').append("<li>-" + data.username + " : " + data.messageValue + "</li>");
+            console.log("new : " + JSON.stringify(data));
+            $('#messages').append("<li>-" + data.FULLNAME_ACCOUNT + " : " + data.messageValue + "</li>");
         });
 
         function sendMessage(){
@@ -33,10 +33,11 @@
                 groupUuid : "hello-123456",
                 messageUuid : "message-Uuid-12345-" + (new Date()).getTime(),
                 messageType : "TEXT",
-                messageValue : mes
+                messageValue : mes,
+                accessToken : "cd9f53c0-5249-11e6-9bca-95a1e69cb789"
             }
             $('#m').val("");
-            socket.emit('NewMessageTest', obj);
+            socket.emit('NewMessage', obj);
         };
 
     </script>

@@ -29,7 +29,8 @@ SocketIoCtrl.prototype.initConfigSocket = function(){
             accessTokenService.checkAccessTokenForChat(accessToken).then(function(result){
                 socket.account = result;
                 //socket.id = result.accountId;
-                logger.debug("NewMessage check accesstoken success");
+
+                logger.debug("NewMessage check accesstoken success : " + JSON.stringify(result));
                 var chatGroupMessage = new ChatGroupMessage();
                 chatGroupMessage.accountId = socket.account.accountId;
                 chatGroupMessage.groupUuid = data.groupUuid ? data.groupUuid : "";
