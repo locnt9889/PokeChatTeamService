@@ -196,6 +196,10 @@ var CHAT_ACTION = {
     IS_NOT_OWNER_MESSAGE: {
         code: 4002,
         message: "You are not owner of message, so can not delete!"
+    },
+    FRIEND_INVALID: {
+        code: 4003,
+        message: "Friend is invalid."
     }
 }
 

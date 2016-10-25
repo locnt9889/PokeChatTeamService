@@ -19,77 +19,42 @@ SocketIoCtrl.prototype.initConfigSocket = function(){
     /*||||||||||||||||SOCKET|||||||||||||||||||||||*/
     //Listen for connection
     io.on('connection', function(socket) {
-        console.log("user connect success : " + socket.id);
-
-        socket.on('NewMessageTest', function(data) {
-            console.log("NewMessageTest : " + JSON.stringify(data));
-            var chatGroupMessage = new ChatGroupMessage();
-            chatGroupMessage.accountId = socket.account.accountId;
-            chatGroupMessage.groupUuid = data.groupUuid;
-            chatGroupMessage.messageUuid = data.messageUuid;
-            chatGroupMessage.messageType = data.messageType;
-            chatGroupMessage.messageValue = data.messageValue;
-
-            //Save it to database
-            groupChatMessageService.create(chatGroupMessage).then(function(result){
-                //Send message to those connected in the room
-                chatGroupMessage.id = result.insertId;
-                chatGroupMessage.username = socket.account.fullname;
-                //io.in(chatGroupMessage.groupUuid).emit('MessageCreated', chatGroupMessage);
-                socket.emit('MessageCreated', chatGroupMessage);
-            });
-        });
+        logger.debug("user connect success : " + socket.id);
 
         //Listens for new user
-        socket.on('InitChatroom', function(data) {
-            console.log("join to room")
+        socket.on('NewMessage', function(data) {
             var accessToken = data.accessToken;
+            logger.debug("NewMessage data: " + JSON.stringify(data));
 
             accessTokenService.checkAccessTokenForChat(accessToken).then(function(result){
                 socket.account = result;
-                socket.chatGroups = data.groups ? data.groups : [];
-                socket.id = result.accountId;
+                //socket.id = result.accountId;
+                logger.debug("NewMessage check accesstoken success");
+                var chatGroupMessage = new ChatGroupMessage();
+                chatGroupMessage.accountId = socket.account.accountId;
+                chatGroupMessage.groupUuid = data.groupUuid ? data.groupUuid : "";
+                chatGroupMessage.friendId = data.friendId ? data.friendId : 0;
+                chatGroupMessage.messageUuid = data.messageUuid;
+                chatGroupMessage.messageType = data.messageType;
+                chatGroupMessage.messageValue = data.messageValue;
 
-                //New user joins room
-                for(var i = 0; i < socket.chatGroups.length; i++){
-                    socket.join(socket.chatGroups[i]);
-                }
-
-                //config
-                //Listens for a new chat message
-                socket.on('NewMessage', function(data) {
-                    console.log("NewMessage : " + JSON.stringify(data));
-                    var chatGroupMessage = new ChatGroupMessage();
-                    chatGroupMessage.accountId = socket.account.accountId;
-                    chatGroupMessage.groupUuid = data.groupUuid;
-                    chatGroupMessage.messageUuid = data.messageUuid;
-                    chatGroupMessage.messageType = data.messageType;
-                    chatGroupMessage.messageValue = data.messageValue;
-
-                    //Save it to database
-                    groupChatMessageService.create(chatGroupMessage).then(function(result){
-                        //Send message to those connected in the room
-                        chatGroupMessage.id = result.insertId;
-                        chatGroupMessage.username = socket.account.fullname;
-                        io.in(chatGroupMessage.groupUuid).emit('MessageCreated', chatGroupMessage);
-                        //io.emit('MessageCreated', chatGroupMessage);
-                    });
-                });
-
-                socket.on('LeftGroup', function(data){
-                    socket.leave(data);
-                });
-
-                socket.on('disconnect', function(){
-                    console.log('user disconnected : ' + socket.id);
-                    //user leave room when disconnect
-                    for(var i = 0; i < socket.chatGroups.length; i++){
-                        socket.leave(socket.chatGroups[i]);
-                    }
+                //Save it to database
+                groupChatMessageService.create(chatGroupMessage).then(function(result){
+                    //Send message to those connected in the room
+                    chatGroupMessage.id = result.insertId;
+                    chatGroupMessage.username = socket.account.fullname;
+                    logger.debug("NewMessage save success");
+                    socket.emit('MessageCreated', chatGroupMessage);
                 });
             }, function(err){
                 logger.error(JSON.stringify(err));
+                logger.debug("NewMessage ErrorAccessToken");
+                socket.emit('ErrorAccessToken', {accessToken : accessToken});
             })
+        });
+
+        socket.on('disconnect', function(){
+            console.log('user disconnected : ' + socket.id);
         });
     });
     /*||||||||||||||||||||END SOCKETS||||||||||||||||||*/

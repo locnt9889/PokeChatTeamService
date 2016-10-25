@@ -29,6 +29,8 @@ var GROUP_ACTION_SQL = {
 var CHAT_ACTION_SQL = {
     GET_MESSAGE_BY_GROUP_COUNT : "SELECT COUNT(id) AS TOTAL_ITEMS FROM chat_group_message WHERE groupUuid = ? AND added < ?",
     GET_MESSAGE_BY_GROUP_PAGING : "SELECT cgm.*, ac.fullname FROM chat_group_message cgm LEFT JOIN accounts ac ON ac.accountId = cgm.accountId WHERE cgm.groupUuid = ? AND cgm.added < ? ORDER BY cgm.added desc LIMIT ?, ?",
+    GET_MESSAGE_BY_2_USER_COUNT : "SELECT COUNT(id) AS TOTAL_ITEMS FROM chat_group_message WHERE ((accountId = ? AND friendId = ?) OR (accountId = ? AND friendId = ?)) AND added < ?",
+    GET_MESSAGE_BY_2_USER_PAGING : "SELECT cgm.*, ac.fullname AS FULLNAME_ACCOUNT, ac1.fullname AS FULLNAME_FRIEND FROM chat_group_message cgm LEFT JOIN accounts ac ON ac.accountId = cgm.accountId LEFT JOIN accounts ac1 ON ac1.accountId = cgm.friendId WHERE ((cgm.accountId = ? AND cgm.friendId = ?) OR (cgm.accountId = ? AND cgm.friendId = ?)) AND cgm.added < ? ORDER BY cgm.added desc LIMIT ?, ?"
 }
 
 /*Exports */

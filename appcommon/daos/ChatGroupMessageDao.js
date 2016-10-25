@@ -54,5 +54,48 @@ chatGroupMessageDao.getMessageByGroup = function(groupUuid, added, perPage, page
     return def.promise;
 }
 
+chatGroupMessageDao.getMessageBy2User = function(accountId, friendId, added, perPage, pageNum){
+    var def = Q.defer();
+
+    var start = perPage * (pageNum-1);
+
+    var sqlCount = SqlQueryConstant.CHAT_ACTION_SQL.GET_MESSAGE_BY_2_USER_COUNT;
+    var paramCount = [accountId, friendId, friendId, accountId, added];
+
+    chatGroupMessageDao.queryExecute(sqlCount, paramCount).then(function(dataCount){
+        var responsePagingDto = new ResponsePagingDto();
+        var totalItems = dataCount[0].TOTAL_ITEMS;
+        var totalPages = parseInt(totalItems / perPage);
+        if((totalItems / perPage) > totalPages){
+            totalPages = totalPages + 1;
+        }
+
+        responsePagingDto.pageNum = pageNum;
+        responsePagingDto.perPage = perPage;
+        responsePagingDto.totalItems = totalItems;
+        responsePagingDto.totalPages = totalPages;
+
+        var sql = SqlQueryConstant.CHAT_ACTION_SQL.GET_MESSAGE_BY_2_USER_PAGING;
+        var params = [accountId, friendId, friendId, accountId, added, start, perPage];
+
+        chatGroupMessageDao.queryExecute(sql, params).then(function(data){
+            responsePagingDto.items = data;
+            def.resolve(responsePagingDto);
+        }, function(err){
+            var errorObj = CodeStatus.COMMON.DB_EXECUTE_ERROR;
+            errorObj["error"] = err;
+            logger.error(JSON.stringify(errorObj));
+            def.reject(errorObj);
+        });
+    }, function(err){
+        var errorObj = CodeStatus.COMMON.DB_EXECUTE_ERROR;
+        errorObj["error"] = err;
+        logger.error(JSON.stringify(errorObj));
+        def.reject(errorObj);
+    });
+
+    return def.promise;
+}
+
 /*Export*/
 module.exports = chatGroupMessageDao;

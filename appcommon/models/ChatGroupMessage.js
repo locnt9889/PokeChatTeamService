@@ -5,7 +5,8 @@ function ChatGroupMessage(){
     this.id = 0;
     this.groupUuid = "";
     this.messageUuid = "";
-    this.accountId = "";
+    this.accountId = 0;
+    this.friendId = 0;
     this.messageType = "";
     this.messageValue = "";
     this.mediaType = "";
