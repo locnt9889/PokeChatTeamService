@@ -21,16 +21,26 @@ SocketIoCtrl.prototype.initConfigSocket = function(){
     io.on('connection', function(socket) {
         logger.debug("user connect success : " + socket.id);
 
-        //Listens for new user
-        socket.on('NewMessage', function(data) {
+        socket.on('RegisterChat', function(data) {
             var accessToken = data.accessToken;
-            logger.debug("NewMessage data: " + JSON.stringify(data));
+            logger.debug("RegisterChat data: " + JSON.stringify(data));
 
             accessTokenService.checkAccessTokenForChat(accessToken).then(function(result){
                 socket.account = result;
-                //socket.id = result.accountId;
+                socket.accessToken = accessToken;
+                socket.emit('AccessTokenSuccess', {isSuccessful : true, accountId : socket.account.accountId, accessToken : socket.accessToken});
+            }, function(err){
+                logger.error(JSON.stringify(err));
+                logger.debug("NewMessage ErrorAccessToken");
+                socket.emit('AccessTokenError', {accessToken : accessToken});
+            })
+        });
 
-                logger.debug("NewMessage check accesstoken success : " + JSON.stringify(result));
+        //Listens for new user
+        socket.on('NewMessage', function(data) {
+            logger.debug("NewMessage data: " + JSON.stringify(data));
+
+            if(socket.account && socket.account.accountId > 0) {
                 var chatGroupMessage = new ChatGroupMessage();
                 chatGroupMessage.accountId = socket.account.accountId;
                 chatGroupMessage.groupUuid = data.groupUuid ? data.groupUuid : "";
@@ -39,19 +49,20 @@ SocketIoCtrl.prototype.initConfigSocket = function(){
                 chatGroupMessage.messageType = data.messageType;
                 chatGroupMessage.messageValue = data.messageValue;
 
+                socket.emit('MessageCreated', {content : chatGroupMessage, username : socket.account.fullname});
+
                 //Save it to database
-                groupChatMessageService.create(chatGroupMessage).then(function(result){
+                chatGroupMessage.username = socket.account.fullname;
+                groupChatMessageService.create(chatGroupMessage).then(function (result) {
                     //Send message to those connected in the room
-                    chatGroupMessage.id = result.insertId;
-                    chatGroupMessage.username = socket.account.fullname;
                     logger.debug("NewMessage save success");
-                    socket.emit('MessageCreated', chatGroupMessage);
+                }, function(err){
+                    logger.error("NewMessage save error : " + JSON.stringify(err));
                 });
-            }, function(err){
-                logger.error(JSON.stringify(err));
-                logger.debug("NewMessage ErrorAccessToken");
-                socket.emit('ErrorAccessToken', {accessToken : accessToken});
-            })
+            }else{
+                logger.debug("NewMessage save error");
+                socket.emit('UnAuthentication', {data : data});
+            }
         });
 
         socket.on('disconnect', function(){

@@ -24,7 +24,7 @@
 
         socket.on('MessageCreated', function (data) {
             console.log("new : " + JSON.stringify(data));
-            $('#messages').append("<li>-" + data.FULLNAME_ACCOUNT + " : " + data.messageValue + "</li>");
+            $('#messages').append("<li>-" + data.username + " : " + data.messageValue + "</li>");
         });
 
         function sendMessage(){
