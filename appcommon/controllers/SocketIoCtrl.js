@@ -49,7 +49,7 @@ SocketIoCtrl.prototype.initConfigSocket = function(){
                 chatGroupMessage.messageType = data.messageType;
                 chatGroupMessage.messageValue = data.messageValue;
 
-                socket.emit('MessageCreated', {content : chatGroupMessage, username : socket.account.fullname});
+                io.emit('MessageCreated', {content : chatGroupMessage, username : socket.account.fullname});
 
                 //Save it to database
                 chatGroupMessage.username = socket.account.fullname;
